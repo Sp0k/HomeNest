@@ -1,0 +1,11 @@
+{
+  "hello": "Hello, World!",
+  "welcome": "Welcome Back!",
+  "welcome.message": "Welcome to HomeNest",
+  "welcome.submessage": "A home solution to save your files",
+  "home": "Home",
+  "switch_language": "Switch to french",
+  "dashboard": "Dashboard",
+  "help": "Help",
+  "title.home": "Home Server"
+}
