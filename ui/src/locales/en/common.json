@@ -7,5 +7,14 @@
   "switch_language": "Switch to french",
   "dashboard": "Dashboard",
   "help": "Help",
-  "title.home": "Home Server"
+  "title.page": "HomeNest - Home Server",
+  "title.home": "Home Server",
+  "title.filemanager": "File Manager",
+  "root": "Root",
+  "upload": "Upload File",
+  "create.file": "Create File",
+  "create.folder": "Create Folder",
+  "created.folders": "Created Folders",
+  "created.files": "Created Files",
+  "uploaded.files": "Uploaded Files"
 }

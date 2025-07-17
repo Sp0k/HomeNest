@@ -2,10 +2,19 @@
   "hello": "Bonjour, Monde!",
   "welcome": "Bon retour!",
   "welcome.message": "Bienvenue sur HomeNest",
-  "welcome.submessage": "Une solution maison pour sauvegarder vos fichiers",
+  "welcome.submessage": "Une solution à domicile pour sauvegarder vos fichiers",
   "home": "Acceuil",
   "switch_language": "Changer a l'anglais",
-  "dashboard": "Tableau de board",
+  "dashboard": "Tableau de bord",
   "help": "Aide",
-  "title.home": "Serveur Maison"
+  "title.page": "HomeNest - Serveur à domicile",
+  "title.home": "Serveur à domicile",
+  "title.filemanager": "Gestionnaire de Fichiers",
+  "root": "Racine",
+  "upload": "Téléverser un fichier",
+  "create.file": "Créer un fichier",
+  "create.folder": "Créer un dossier",
+  "created.folders": "Dossiers créé",
+  "created.files": "Fichiers créé",
+  "uploaded.files": "Fichiers téléversé"
 }
