@@ -16,5 +16,7 @@
   "create.folder": "Create Folder",
   "created.folders": "Created Folders",
   "created.files": "Created Files",
-  "uploaded.files": "Uploaded Files"
+  "uploaded.files": "Uploaded Files",
+  "folder.name": "Folder Name",
+  "file.name": "File Name"
 }

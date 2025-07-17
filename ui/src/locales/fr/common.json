@@ -16,5 +16,7 @@
   "create.folder": "Créer un dossier",
   "created.folders": "Dossiers créé",
   "created.files": "Fichiers créé",
-  "uploaded.files": "Fichiers téléversé"
+  "uploaded.files": "Fichiers téléversé",
+  "folder.name": "Nom du dossier",
+  "file.name": "Nom du fichier"
 }
