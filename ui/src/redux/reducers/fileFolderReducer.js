@@ -1,13 +1,21 @@
+import * as types from "../actionTypes/fileFoldersActionTypes"
+
 const initialState = {
   isLoading: false,
-  currentFolder: "",
+  currentFolder: "root",
   userFolders: [],
   userFiles: [],
 }
 
 const fileFolderReducer = (state = initialState, action) => {
   switch (action.type) {
-    default: return state;
+    case types.CREATE_FOLDER:
+      return {
+        ...state,
+        userFolders: [...state.userFolders, action.payload],
+      };
+    default: 
+      return state;
   }
 }
 

@@ -15,8 +15,18 @@
   "create.file": "Create File",
   "create.folder": "Create Folder",
   "created.folders": "Created Folders",
+  "created.folder": "Created Folder",
   "created.files": "Created Files",
+  "created.file": "Created File",
   "uploaded.files": "Uploaded Files",
   "folder.name": "Folder Name",
-  "file.name": "File Name"
+  "file.name": "File Name",
+  "error.folder.already.exists": "A folder with this name already exists",
+  "error.folder.name.short": "Folder name must be a minimum of 3 characters",
+  "error.folder.name.empty": "Folder name cannot be empty",
+  "error.file.already.exists": "A file with this name already exists",
+  "error.file.name.short": "File name must be a minimum of 3 characters",
+  "error.file.name.empty": "File name cannot be empty",
+  "success.folder": "Folder created successfully",
+  "success.file": "File created successfully"
 }
