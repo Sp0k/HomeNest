@@ -19,6 +19,8 @@ const CreateFolder = ({ setIsCreateFolderModalOpen }) => {
   const dispatch = useDispatch();
 
   const checkFolderAlreadyExists = (name) => {
+    if (userFolders == null) return false;
+
     const folderPresent = userFolders.find((folder) => folder.name === name);
     if (folderPresent)
       return true;

@@ -1,38 +1,62 @@
-import { useState } from "react"
-import HomeComponent from "../../components/DashboardComponents/HomeComponent/HomeComponent"
-import Navbar from "../../components/DashboardComponents/Navbar/Navbar"
-import SubBar from "../../components/DashboardComponents/SubBar/SubBar"
-import CreateFolder from "../../components/DashboardComponents/CreateFolder/CreateFolder"
-import CreateFile from "../../components/DashboardComponents/CreateFile/CreateFile"
+import { useEffect, useState } from "react";
+import {
+  Route,
+  Routes,
+  useNavigate,
+  useParams
+} from "react-router-dom";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+
+import HomeComponent from "../../components/DashboardComponents/HomeComponent/HomeComponent";
+import Navbar        from "../../components/DashboardComponents/Navbar/Navbar";
+import SubBar        from "../../components/DashboardComponents/SubBar/SubBar";
+import CreateFolder  from "../../components/DashboardComponents/CreateFolder/CreateFolder";
+import CreateFile    from "../../components/DashboardComponents/CreateFile/CreateFile";
+import FolderComponent from "../../components/DashboardComponents/FolderComponent/FolderComponent";
+
+import { getFolders } from "../../redux/actionCreators/fileFoldersActionCreator";
 
 const DashboardPage = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
-  const [isCreateFileModalOpen, setIsCreateFileModalOpen] = useState(false);
+  const [isCreateFileModalOpen,   setIsCreateFileModalOpen]   = useState(false);
+
+  const { isLoading } = useSelector(
+    state => ({ isLoading: state.fileFolders.isLoading }),
+    shallowEqual
+  );
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoading) {
+      dispatch(getFolders("/root"));
+    }
+  }, [isLoading, dispatch]);
 
   return (
     <>
-      {
-        isCreateFolderModalOpen && (
-          <CreateFolder
-            setIsCreateFolderModalOpen={setIsCreateFolderModalOpen}
-          />
-        )
-      }
-      {
-        isCreateFileModalOpen && (
-          <CreateFile
-            setIsCreateFileModalOpen={setIsCreateFileModalOpen}
-          />
-        )
-      }
+      {isCreateFolderModalOpen && (
+        <CreateFolder setIsCreateFolderModalOpen={setIsCreateFolderModalOpen} />
+      )}
+      {isCreateFileModalOpen && (
+        <CreateFile setIsCreateFileModalOpen={setIsCreateFileModalOpen} />
+      )}
       <Navbar />
-      <SubBar 
-        setIsCreateFolderModalOpen={setIsCreateFolderModalOpen} 
+      <SubBar
+        setIsCreateFolderModalOpen={setIsCreateFolderModalOpen}
         setIsCreateFileModalOpen={setIsCreateFileModalOpen}
       />
-      <HomeComponent />
-    </>
-  )
-}
 
-export default DashboardPage
+      <Routes>
+        <Route index element={<HomeComponent />} />
+        <Route
+          path="folder/:folderId"
+          element={<FolderComponent />}
+        />
+      </Routes>
+    </>
+  );
+};
+
+export default DashboardPage;

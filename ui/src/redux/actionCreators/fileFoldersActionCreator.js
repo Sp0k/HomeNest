@@ -10,6 +10,16 @@ const addFolder = (payload) => ({
   payload,
 });
 
+const addFolders = (payload) => ({
+  type: types.ADD_FOLDERS,
+  payload,
+});
+
+const setLoading = (payload) => ({
+  type: types.SET_LOADING,
+  payload,
+});
+
 // action creators
 
 export const createFolder = (data) => async (dispatch) => {
@@ -30,5 +40,22 @@ export const createFolder = (data) => async (dispatch) => {
     alert(i18n.t('success.folder'));
   } catch (error) {
     console.error("Failed to create folder:", error);
+  }
+};
+
+export const getFolders = (parentPath = "/root") => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const response = await axios.get(
+      '/api/getFolders',
+      { params: { path: parentPath }, }
+    );
+
+    const nodes = response.data;
+
+    dispatch(addFolders(nodes));
+    dispatch(setLoading(false));
+  } catch (error) {
+    console.error("Failed to load folder:")
   }
 };

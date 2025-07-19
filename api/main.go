@@ -14,6 +14,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/api/createFolder", nest.CreateFolderHandler).Methods("POST")
+	r.HandleFunc("/api/getFolders", nest.GetFoldersHandler).Methods("GET")
 
 	corsOpts := handlers.CORS(
 		handlers.AllowedOrigins([]string{"http://localhost:3000"}),

@@ -28,5 +28,6 @@
   "error.file.name.short": "File name must be a minimum of 3 characters",
   "error.file.name.empty": "File name cannot be empty",
   "success.folder": "Folder created successfully",
-  "success.file": "File created successfully"
+  "success.file": "File created successfully",
+  "loading": "Loading..."
 }

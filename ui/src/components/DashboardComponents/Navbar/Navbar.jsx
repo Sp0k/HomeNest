@@ -8,7 +8,7 @@ const Navbar = () => {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm p-3">
-        <Link className="navbar-brand ms-5" to="/">HomeNest - {t('title.filemanager')}</Link>
+        <Link className="navbar-brand ms-5" to="/dashboard">HomeNest - {t('title.filemanager')}</Link>
 
         <ul className="navbar-nav ms-auto me-5">
           <li className="nav-item mx-2">

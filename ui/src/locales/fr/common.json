@@ -28,5 +28,6 @@
   "error.file.name.short": "Le nom d'un fichier doit être composé d'un minimum de 3 charactères",
   "error.file.name.empty": "Le nom d'un fichier ne peu pas être vide",
   "success.folder": "Dossier créé avec succès",
-  "success.file": "Fichier créé avec succès"
+  "success.file": "Fichier créé avec succès",
+  "loading": "En cours de chargement..."
 }
