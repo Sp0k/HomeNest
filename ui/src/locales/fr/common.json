@@ -29,5 +29,7 @@
   "error.file.name.empty": "Le nom d'un fichier ne peu pas être vide",
   "success.folder": "Dossier créé avec succès",
   "success.file": "Fichier créé avec succès",
-  "loading": "En cours de chargement..."
+  "loading": "En cours de chargement...",
+  "folder.empty": "Il n'y a rien ici pour le moment...",
+  "folders": "Dossiers"
 }

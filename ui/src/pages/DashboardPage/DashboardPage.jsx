@@ -20,17 +20,16 @@ const DashboardPage = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [isCreateFileModalOpen,   setIsCreateFileModalOpen]   = useState(false);
 
-  const { isLoading } = useSelector(
-    state => ({ isLoading: state.fileFolders.isLoading }),
+  const { isLoading, currentFolder } = useSelector(
+    state => ({ isLoading: state.fileFolders.isLoading, currentFolder: state.fileFolders.currentFolder }),
     shallowEqual
   );
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoading) {
-      dispatch(getFolders("/root"));
+      dispatch(getFolders(currentFolder));
     }
   }, [isLoading, dispatch]);
 

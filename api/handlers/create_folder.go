@@ -1,12 +1,12 @@
 package handlers
 
 import (
-    "encoding/json"
-    "net/http"
-    "os"
-    "path/filepath"
-    "strings"
-    "time"
+	"encoding/json"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
 )
 
 // BaseDir is where all your files/folders live on disk.

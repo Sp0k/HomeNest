@@ -29,5 +29,7 @@
   "error.file.name.empty": "File name cannot be empty",
   "success.folder": "Folder created successfully",
   "success.file": "File created successfully",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "folder.empty": "There is nothing here yet...",
+  "folders": "Folders"
 }

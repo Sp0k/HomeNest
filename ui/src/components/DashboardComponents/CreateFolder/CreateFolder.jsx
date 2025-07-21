@@ -34,12 +34,8 @@ const CreateFolder = ({ setIsCreateFolderModalOpen }) => {
       if (folderName.length >= 3) {
         if (!checkFolderAlreadyExists(folderName)) {
           const data = {
-            createdAt: new Date(),
             name: folderName,
-            path: currentFolder === "root" ? [] : ["parent folder path"],
             parent: currentFolder,
-            lastAccessed: null,
-            updatedAt: new Date(),
           };
           dispatch(createFolder(data));
         } else {

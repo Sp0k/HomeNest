@@ -20,6 +20,11 @@ const setLoading = (payload) => ({
   payload,
 });
 
+const setChangeFolder = (payload) => ({
+  type: types.CHANGE_FOLDER,
+  payload,
+});
+
 // action creators
 
 export const createFolder = (data) => async (dispatch) => {
@@ -43,7 +48,7 @@ export const createFolder = (data) => async (dispatch) => {
   }
 };
 
-export const getFolders = (parentPath = "/root") => async (dispatch) => {
+export const getFolders = (parentPath = "/") => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const response = await axios.get(
@@ -53,9 +58,14 @@ export const getFolders = (parentPath = "/root") => async (dispatch) => {
 
     const nodes = response.data;
 
-    dispatch(addFolders(nodes));
+    dispatch(addFolders(nodes || []));
     dispatch(setLoading(false));
   } catch (error) {
     console.error("Failed to load folder:")
   }
 };
+
+export const changeFolder = (folderId) => async (dispatch) => {
+  dispatch(setChangeFolder(folderId));
+  await dispatch(getFolders(folderId));
+}
