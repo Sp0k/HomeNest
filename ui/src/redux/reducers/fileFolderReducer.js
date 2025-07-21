@@ -29,6 +29,16 @@ const fileFolderReducer = (state = initialState, action) => {
         ...state,
         currentFolder: action.payload,
       };
+    case types.ADD_FILES:
+      return {
+        ...state,
+        userFiles: action.payload,
+      };
+    case types.CREATE_FILE:
+      return {
+        ...state,
+        userFiles: [...state.userFiles, action.payload],
+      };
     default: 
       return state;
   }

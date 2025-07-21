@@ -1,7 +1,36 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolder, faFileAlt } from "@fortawesome/free-solid-svg-icons";
+import { 
+  faFolder,
+  faFileAlt,
+  faFileWord,
+  faFileExcel,
+  faFilePowerpoint,
+  faFileImage,
+  faFileAudio,
+  faFileVideo,
+  faFilePdf,
+  faFileCode,
+  faFileCircleCheck,
+  faArchive,
+} from "@fortawesome/free-solid-svg-icons";
 
 import ItemType from '../../Types/itemType';
+import { 
+  DocumentEditingFormats,
+  SpreadsheetEditingFormats,
+  PresentationEditingFormats,
+  FormEditingFormats,
+} from '../../Types/onlyOfficeFileTypes';
+import {
+  ImageFormats,
+  AudioFormats,
+  VideoFormats,
+  PdfFormats,
+  ArchiveFormats,
+} from '../../Types/mediaFileTypes';
+import { CodeFileTypes } from '../../Types/codeFileTypes';
+import has from '../../Types/enumHandler';
+
 import './ShowItems.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -21,7 +50,30 @@ const ShowItems = ({ title, items, type }) => {
     }
   };
 
+  const selectFileIcon = (fileName) => {
+    const idx = fileName.lastIndexOf('.');
+    if (idx === -1) return faFileAlt;
+    const fileExt = fileName.substring(idx + 1);
+    
+    // Decide filetype
+    if (has(DocumentEditingFormats, fileExt)) return faFileWord;
+    if (has(SpreadsheetEditingFormats, fileExt)) return faFileExcel;
+    if (has(PresentationEditingFormats, fileExt)) return faFilePowerpoint;
+    if (has(ImageFormats, fileExt)) return faFileImage;
+    if (has(AudioFormats, fileExt)) return faFileAudio;
+    if (has(VideoFormats, fileExt)) return faFileVideo;
+    if (has(PdfFormats, fileExt)) return faFilePdf;
+    if (has(CodeFileTypes, fileExt)) return faFileCode;
+    if (has(FormEditingFormats, fileExt)) return faFileCircleCheck;
+    if (has(ArchiveFormats, fileExt)) return faArchive;
+    return faFileAlt;
+  }
 
+  const getDisplayName = (fileName) => {
+    const idx = fileName.lastIndexOf('.');
+    if (idx === -1) return fileName;
+    return fileName.substring(0, idx);
+  }
 
   return (
     <div className="w-100">
@@ -37,9 +89,9 @@ const ShowItems = ({ title, items, type }) => {
               { type === ItemType.FOLDER ? (
                 <FontAwesomeIcon icon={faFolder} size="4x" className="mb-3" />
               ):(
-                  <FontAwesomeIcon icon={faFileAlt} size="4x" className="mb-3" />
+                  <FontAwesomeIcon icon={selectFileIcon(item.name)} size="4x" className="mb-3" />
                 )}
-              {item.name}
+              {getDisplayName(item.name)}
             </p>
           );
         })}

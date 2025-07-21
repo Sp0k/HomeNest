@@ -25,6 +25,16 @@ const setChangeFolder = (payload) => ({
   payload,
 });
 
+const addFiles = (payload) => ({
+  type: types.ADD_FILES,
+  payload,
+});
+
+const createFiles = (payload) => ({
+  type: types.CREATE_FILE,
+  payload,
+});
+
 // action creators
 
 export const createFolder = (data) => async (dispatch) => {
@@ -69,3 +79,19 @@ export const changeFolder = (folderId) => async (dispatch) => {
   dispatch(setChangeFolder(folderId));
   await dispatch(getFolders(folderId));
 }
+
+export const getFiles = (parentPath = "/") => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const response = await axios.get(
+      '/api/getFiles',
+      { params: { path: parentPath }, }
+    );
+
+    const nodes = response.data;
+    dispatch(addFiles(nodes || []));
+    dispatch(setLoading(false));
+  } catch (error) {
+    console.error("Failed to load files:");
+  }
+};

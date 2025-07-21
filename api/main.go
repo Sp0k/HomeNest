@@ -15,6 +15,7 @@ func main() {
 
 	r.HandleFunc("/api/createFolder", nest.CreateFolderHandler).Methods("POST")
 	r.HandleFunc("/api/getFolders", nest.GetFoldersHandler).Methods("GET")
+	r.HandleFunc("/api/getFiles", nest.GetFilesHandler).Methods("GET")
 
 	corsOpts := handlers.CORS(
 		handlers.AllowedOrigins([]string{"http://localhost:3000"}),

@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Route,
-  Routes,
-  useNavigate,
-  useParams
-} from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 
 import HomeComponent from "../../components/DashboardComponents/HomeComponent/HomeComponent";
@@ -14,7 +9,7 @@ import CreateFolder  from "../../components/DashboardComponents/CreateFolder/Cre
 import CreateFile    from "../../components/DashboardComponents/CreateFile/CreateFile";
 import FolderComponent from "../../components/DashboardComponents/FolderComponent/FolderComponent";
 
-import { getFolders } from "../../redux/actionCreators/fileFoldersActionCreator";
+import { getFolders, getFiles } from "../../redux/actionCreators/fileFoldersActionCreator";
 
 const DashboardPage = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
@@ -30,6 +25,7 @@ const DashboardPage = () => {
   useEffect(() => {
     if (isLoading) {
       dispatch(getFolders(currentFolder));
+      dispatch(getFiles(currentFolder));
     }
   }, [isLoading, dispatch]);
 
@@ -48,7 +44,7 @@ const DashboardPage = () => {
       />
 
       <Routes>
-        <Route index element={<HomeComponent />} />
+        <Route index element={<FolderComponent />} />
         <Route
           path="folder/:folderId"
           element={<FolderComponent />}
