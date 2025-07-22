@@ -31,5 +31,10 @@
   "success.file": "File created successfully",
   "loading": "Loading...",
   "folder.empty": "There is nothing here yet...",
-  "folders": "Folders"
+  "folders": "Folders",
+  "files": "Files",
+  "document": "Document",
+  "sheet": "Spreadsheet",
+  "presentation": "Presentation",
+  "form": "Form"
 }

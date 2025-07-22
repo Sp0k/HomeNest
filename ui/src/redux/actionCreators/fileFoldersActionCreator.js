@@ -25,13 +25,13 @@ const setChangeFolder = (payload) => ({
   payload,
 });
 
-const addFiles = (payload) => ({
-  type: types.ADD_FILES,
+const addFile = (payload) => ({
+  type: types.CREATE_FILE,
   payload,
 });
 
-const createFiles = (payload) => ({
-  type: types.CREATE_FILE,
+const addFiles = (payload) => ({
+  type: types.ADD_FILES,
   payload,
 });
 
@@ -95,3 +95,28 @@ export const getFiles = (parentPath = "/") => async (dispatch) => {
     console.error("Failed to load files:");
   }
 };
+
+export const createFile = (data) => async (dispatch) => {
+  const requestBody = {
+    parentPath: data.parent,
+    fileName: data.name,
+    fileType: data.type,
+  }
+
+  try {
+    const response = await axios.post(
+      '/api/createFile',
+      requestBody
+    );
+
+    const newFileNode = response.data.node;
+
+    dispatch(addFile(newFileNode));
+    alert(i18n.t('success.file'));
+
+    // TODO: Open app in correct OnlyOffice app
+    console.log("Now open file in correct ONLYOFFICE app");
+  } catch (error) {
+    console.error("Failed to create file:", error);
+  }
+}
