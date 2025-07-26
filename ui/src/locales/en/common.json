@@ -27,6 +27,7 @@
   "error.file.already.exists": "A file with this name already exists",
   "error.file.name.short": "File name must be a minimum of 3 characters",
   "error.file.name.empty": "File name cannot be empty",
+  "error.no.file.selected": "No file selected",
   "success.folder": "Folder created successfully",
   "success.file": "File created successfully",
   "success.upload": "Files uploaded successfully",

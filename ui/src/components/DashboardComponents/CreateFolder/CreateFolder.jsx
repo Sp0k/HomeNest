@@ -4,6 +4,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { createFolder } from '../../../redux/actionCreators/fileFoldersActionCreator';
+import { toast } from 'react-toastify';
 
 const CreateFolder = ({ setIsCreateFolderModalOpen }) => {
   const { t } = useTranslation();
@@ -38,14 +39,15 @@ const CreateFolder = ({ setIsCreateFolderModalOpen }) => {
             parent: currentFolder,
           };
           dispatch(createFolder(data));
+          setIsCreateFolderModalOpen(false);
         } else {
-          alert(t('error.folder.already.exists'))
+          toast.error(t('error.folder.already.exists'));
         }
       } else {
-        alert(t('error.folder.name.short'));
+        toast.error(t('error.folder.name.short'));
       }
     } else {
-      alert(t('error.folder.name.empty'));
+      toast.error(t('error.folder.name.empty'));
     }
   }
 

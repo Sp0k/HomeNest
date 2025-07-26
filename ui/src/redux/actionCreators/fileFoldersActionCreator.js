@@ -1,5 +1,6 @@
 import axios from 'axios';
 import i18n from 'i18next';
+import { toast } from 'react-toastify';
 
 import * as types from "../actionTypes/fileFoldersActionTypes";
 
@@ -52,7 +53,7 @@ export const createFolder = (data) => async (dispatch) => {
     const newFolderNode = response.data.node;
 
     dispatch(addFolder(newFolderNode));
-    alert(i18n.t('success.folder'));
+    toast.success(i18n.t('success.folder'));
   } catch (error) {
     console.error("Failed to create folder:", error);
   }
@@ -112,7 +113,7 @@ export const createFile = (data) => async (dispatch) => {
     const newFileNode = response.data.node;
 
     dispatch(addFile(newFileNode));
-    alert(i18n.t('success.file'));
+    toast.success(i18n.t('success.file'));
 
     // TODO: Open app in correct OnlyOffice app
     console.log("Now open file in correct ONLYOFFICE app");
@@ -134,14 +135,14 @@ export const uploadFiles = (data, onSuccess) => async (dispatch) => {
     const parent = data.get('parentPath');
     await dispatch(getFiles(parent));
 
-    alert(i18n.t('success.upload'));
+    toast.success(i18n.t('success.upload'));
 
     if (typeof onSuccess === 'function') {
       onSuccess();
     }
   } catch (err) {
     console.error("Failed to upload files:", err);
-    alert(i18n.t('error.upload'));
+    toast.error(i18n.t('error.upload'));
   } finally {
     dispatch(setLoading(false));
   }

@@ -1,8 +1,10 @@
 import { Route, Routes } from "react-router-dom"
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
+import { ToastContainer } from "react-toastify"
 
 import './App.css'
+
 import HomePage from './pages/HomePage/HomePage'
 import DashboardPage from './pages/DashboardPage/DashboardPage'
 
@@ -19,6 +21,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard/*" element={<DashboardPage />} />
       </Routes>
+      <ToastContainer />
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { useDropzone } from 'react-dropzone';
 
 import './UploadFile.css';
 import { uploadFiles } from '../../../redux/actionCreators/fileFoldersActionCreator';
+import { toast } from 'react-toastify';
 
 const UploadFile = ({ setIsUploadFileModalOpen }) => {
   const { t } = useTranslation();
@@ -38,8 +39,19 @@ const UploadFile = ({ setIsUploadFileModalOpen }) => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
   };
+
+  const checkFileAlreadyExists = (name) => {
+    if (userFiles === null) return false;
+
+    const filePresent = userFiles.find(file => file.name === name);
+    if (filePresent)
+      return true;
+      else
+      return false;
+  }
+
   const fileList = acceptedFiles.map(file => {
-    const displayPath = file.path || file.webkitRelativePath || file.name;
+    const displayPath = file.name;
     return (
       <li key={displayPath}>
         {displayPath} — {formatBytes(file.size)}
@@ -51,22 +63,17 @@ const UploadFile = ({ setIsUploadFileModalOpen }) => {
     e.preventDefault();
 
     if (acceptedFiles.length === 0) {
-      alert(t('error.noFilesSelected'));
+      toast.error(t('error.no.file.selected'));
       return;
     }
 
-    const topNames = Array.from(new Set(
-      acceptedFiles.map(file => {
-        const rel = file.path || file.webkitRelativePath || file.name;
-        return rel.split('/')[0];
-      })
-    ));
-
-    const conflict = topNames.find(name =>
-      userFiles.some(existing => existing.name === name)
-    );
-    if (conflict) {
-      alert(t('error.file.already.exists', { name: conflict }));
+    let filesExists = false;
+    acceptedFiles.forEach(file => {
+        if (checkFileAlreadyExists(file.name))
+          filesExists = true;
+    })
+    if (filesExists) {
+      toast.error(t('error.file.already.exists'));
       return;
     }
 

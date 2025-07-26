@@ -5,6 +5,7 @@ import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { createFile } from '../../../redux/actionCreators/fileFoldersActionCreator';
 import Select from 'react-select';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 
 const CreateFile = ({ setIsCreateFileModalOpen }) => {
   const { t } = useTranslation();
@@ -55,14 +56,15 @@ const CreateFile = ({ setIsCreateFileModalOpen }) => {
             type: fileType,
           };
           dispatch(createFile(data));
+          setIsCreateFileModalOpen(false);
         } else {
-          alert(t('error.file.already.exists'));
+          toast.error(t('error.file.already.exists'));
         }
       } else {
-        alert(t('error.file.name.short'));
+        toast.error(t('error.file.short'));
       }
     } else {
-      alert(t('error.file.name.empty'));
+      toast.error(t('error.file.name.empty'));
     }
   }
 
