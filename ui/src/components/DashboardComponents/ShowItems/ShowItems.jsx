@@ -1,12 +1,58 @@
-import './ShowItems.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFolder } from "@fortawesome/free-solid-svg-icons";
 
-const ShowItems = ({title, items}) => {
+import ItemType from '../../Types/itemType';
+
+import './ShowItems.css';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { changeFolder } from '../../../redux/actionCreators/fileFoldersActionCreator';
+import { selectFileIcon } from './FileIcons'
+
+const ShowItems = ({ title, items, type }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleDoubleClick = (item) => {
+    if (type === ItemType.FOLDER) {
+      const folderPath = encodeURIComponent(item.path);
+      dispatch(changeFolder(item.path));
+      navigate(`/dashboard/folder/${folderPath}`);
+    } else {
+      alert("This is a file... This is unimplemented :'(")
+    }
+  };
+
+  const getDisplayName = (fileName) => {
+    const idx = fileName.lastIndexOf('.');
+    if (idx === -1) return fileName;
+    return fileName.substring(0, idx);
+  }
+
   return (
     <div className="w-100">
       <h4 className="text-center border-bottom">{title}</h4>
       <div className="row gap-2 p-4 flex-wrap">
         {items.map((item, index) => {
-          return <p key={index * 55} className="col-md-2 border p-2 text-center">{item}</p>
+          return (
+            <p
+              key={index * 55} 
+              className="col-md-2 border py-3 text-center d-flex flex-column"
+              onDoubleClick={() => handleDoubleClick(item)}
+            >
+              <FontAwesomeIcon 
+                icon={ type === ItemType.FOLDER ? faFolder : selectFileIcon(item.name)}
+                size="4x"
+                className="mb-3"
+              />
+              <span
+                className="file-name text-truncate"
+                title={getDisplayName(item.name)}
+              >
+                {getDisplayName(item.name)}
+              </span>
+            </p>
+          );
         })}
       </div>
     </div>
