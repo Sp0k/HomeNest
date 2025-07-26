@@ -10,11 +10,14 @@ import FolderComponent from "../../components/DashboardComponents/FolderComponen
 
 import { getFolders, getFiles } from "../../redux/actionCreators/fileFoldersActionCreator";
 import UploadFile from "../../components/DashboardComponents/UploadFile/UploadFile";
+import PreviewModal from "../../components/DashboardComponents/Preview/PreviewModal";
 
 const DashboardPage = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [isCreateFileModalOpen,   setIsCreateFileModalOpen]   = useState(false);
   const [isUploadFileModalOpen,   setIsUploadFileModalOpen]   = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [noPreview, setNoPreview] = useState(null);
 
   const { isLoading, currentFolder } = useSelector(
     state => ({ isLoading: state.fileFolders.isLoading, currentFolder: state.fileFolders.currentFolder }),
@@ -41,6 +44,19 @@ const DashboardPage = () => {
       {isUploadFileModalOpen && (
         <UploadFile setIsUploadFileModalOpen={setIsUploadFileModalOpen} />
       )}
+      {preview && (
+        <PreviewModal
+          file={preview.file}
+          type={preview.type}
+          onClose={() => setPreview(null)}
+        />
+      )}
+      {/* {noPreview && ( */}
+      {/*   <NoPreviewModal */}
+      {/*     file={preview.file} */}
+      {/*     onClose={() => setNoPreview(null)} */}
+      {/*   /> */}
+      {/* )} */}
       <Navbar />
       <SubBar
         setIsCreateFolderModalOpen={setIsCreateFolderModalOpen}
@@ -49,10 +65,16 @@ const DashboardPage = () => {
       />
 
       <Routes>
-        <Route index element={<FolderComponent />} />
+        <Route index element={<FolderComponent 
+          onPreview={(f, type) => setPreview({file: f, type})} 
+          onNoPreview={f => setNoPreview(f)}
+        />} />
         <Route
           path="folder/:folderId"
-          element={<FolderComponent />}
+          element={<FolderComponent 
+            onPreview={(f, type) => setPreview({file: f, type})} 
+            onNoPreview={f => setNoPreview(f)}
+          />}
         />
       </Routes>
     </>

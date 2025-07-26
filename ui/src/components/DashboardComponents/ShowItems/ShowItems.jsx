@@ -8,8 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { changeFolder } from '../../../redux/actionCreators/fileFoldersActionCreator';
 import { selectFileIcon } from './FileIcons'
+import { getFileExt, getPreviewType } from '../../../utils/filePreviewUtils';
 
-const ShowItems = ({ title, items, type }) => {
+const ShowItems = ({ title, items, type, onPreview, onNoPreview }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -19,9 +20,19 @@ const ShowItems = ({ title, items, type }) => {
       dispatch(changeFolder(item.path));
       navigate(`/dashboard/folder/${folderPath}`);
     } else {
-      alert("This is a file... This is unimplemented :'(")
+      handleFileBehaviour(item);
     }
   };
+
+  const handleFileBehaviour = (file) => {
+    const previewType = getPreviewType(getFileExt(file.name));
+    if (previewType) {
+      onPreview(file, previewType);
+    } else {
+      // TODO: Handle Only Office files
+      onNoPreview(file);
+    }
+  }
 
   const getDisplayName = (fileName) => {
     const idx = fileName.lastIndexOf('.');
