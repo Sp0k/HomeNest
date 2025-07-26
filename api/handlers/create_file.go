@@ -28,7 +28,11 @@ func CreateFileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fullName := strings.Join([]string{req.FileName, req.FileType}, ".")
+	fullName := req.FileName
+	if len(req.FileType) > 1 {
+		fullName = strings.Join([]string{req.FileName, req.FileType}, ".")
+	}
+
 	fullPath := filepath.Join(BaseDir, cleanParent, fullName)
 
 	if _, err := os.Create(fullPath); err != nil {

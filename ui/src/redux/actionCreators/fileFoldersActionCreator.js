@@ -120,3 +120,29 @@ export const createFile = (data) => async (dispatch) => {
     console.error("Failed to create file:", error);
   }
 }
+
+export const uploadFiles = (data, onSuccess) => async (dispatch) => {
+  dispatch(setLoading(true));
+
+  try {
+    const resp = await axios.post(
+      '/api/upload',
+      data,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+
+    const parent = data.get('parentPath');
+    await dispatch(getFiles(parent));
+
+    alert(i18n.t('success.upload'));
+
+    if (typeof onSuccess === 'function') {
+      onSuccess();
+    }
+  } catch (err) {
+    console.error("Failed to upload files:", err);
+    alert(i18n.t('error.upload'));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};

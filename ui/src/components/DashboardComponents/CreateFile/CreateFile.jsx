@@ -14,6 +14,7 @@ const CreateFile = ({ setIsCreateFileModalOpen }) => {
     { value: "xlsx", label: t('sheet') },
     { value: "pptx", label: t('presentation') },
     { value: "docxf", label: t('form') },
+    { value: "", label: t('custom') },
   ];
 
   const [fileName, setFileName] = useState("");
@@ -38,11 +39,16 @@ const CreateFile = ({ setIsCreateFileModalOpen }) => {
       return false;
   }
 
+  const getFileFullName = () => {
+    if (fileType == fileTypeOptions[4].value) return fileName;
+    return fileName + "." + fileType;
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (fileName) {
-      if (fileName.length > 3) {
-        if (!checkFileAlreadyExists(fileName)) {
+      if (fileName.length >= 3) {
+        if (!checkFileAlreadyExists(getFileFullName())) {
           const data = {
             name: fileName,
             parent: currentFolder,
@@ -93,7 +99,7 @@ const CreateFile = ({ setIsCreateFileModalOpen }) => {
                 <input
                   type="text"
                   className="form-control"
-                  id="folderName"
+                  id="fileName"
                   placeholder={t('file.name')}
                   onChange={(e) => setFileName(e.target.value)}
                 />

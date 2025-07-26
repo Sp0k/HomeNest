@@ -11,7 +11,7 @@
   "title.home": "Home Server",
   "title.filemanager": "File Manager",
   "root": "Root",
-  "upload": "Upload File",
+  "upload": "Upload Files",
   "create.file": "Create File",
   "create.folder": "Create Folder",
   "created.folders": "Created Folders",
@@ -29,6 +29,7 @@
   "error.file.name.empty": "File name cannot be empty",
   "success.folder": "Folder created successfully",
   "success.file": "File created successfully",
+  "success.upload": "Files uploaded successfully",
   "loading": "Loading...",
   "folder.empty": "There is nothing here yet...",
   "folders": "Folders",
@@ -36,5 +37,10 @@
   "document": "Document",
   "sheet": "Spreadsheet",
   "presentation": "Presentation",
-  "form": "Form"
+  "form": "Form",
+  "custom": "Custom",
+  "upload.file": "Upload File",
+  "select.file": "Drag 'n drop or click here to select a file",
+  "drop.file": "Drag 'n drop the file",
+  "file": "File"
 }

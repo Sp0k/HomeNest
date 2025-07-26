@@ -1,0 +1,17 @@
+.dropzone {
+  border: 2px dashed #6c757d;        /* gray dashed border */
+  border-radius: 4px;               /* rounded corners */
+  padding: 2rem;                    /* nice hit‑area */
+  text-align: center;
+  background: #f8f9fa;              /* light gray background */
+  transition: background 0.2s ease;
+}
+
+.dropzone:hover {
+  background: #e9ecef;
+}
+
+.dropzone--active {
+  background: #d4edda;              /* greenish when dragging */
+}
+
