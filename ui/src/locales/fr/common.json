@@ -42,5 +42,10 @@
   "upload.file": "Téléverser le fichier",
   "select.file": "Déposer ou appuyer ici pour choisir un fichier",
   "drop.file": "Déposer le fichier",
-  "file": "Fichier"
+  "file": "Fichier",
+  "video.not.supported": "Votre navigateur ne prend pas en charge la vidéo HTML5.",
+  "pdf.not.supported": "Aperçu PDF non pris en charge.",
+  "back": "Retour",
+  "download": "Télécharger",
+  "no.preview": "Aucun aperçu disponible pour ce fichier…"
 }

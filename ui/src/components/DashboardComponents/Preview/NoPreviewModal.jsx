@@ -1,37 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faDownload, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faDownload } from "@fortawesome/free-solid-svg-icons";
 
-const PreviewModal = ({ file, type, onClose }) => {
+const NoPreviewModal = ({ file, onClose }) => {
   const url = `/api/download?path=${encodeURIComponent(file.path)}`;
   const { t } = useTranslation();
-
-  const previewElement = {
-    image: <img src={url} alt={file.name} className="mw-100 mt-5" />,
-    video: (
-      <video controls className="mw-100 mt-5">
-        <source src={url} />
-        {t('video.not.supported')}
-      </video>
-    ),
-    audio: <audio controls src={url} className="mt-5" />,
-    pdf: (
-      <object
-        data={url}
-        type="application/pdf"
-        width="90%"
-        height="90%"
-        className="mt-2"
-      >
-        <p>
-          {t('pdf.not.supported')}
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            Download
-          </a>
-        </p>
-      </object>
-    ),
-  }[type];
 
   return (
     <div
@@ -62,11 +35,18 @@ const PreviewModal = ({ file, type, onClose }) => {
           </a>
         </div>
         <div className="d-flex flex-column align-items-center h-100">
-          {previewElement}
+          <div className="col-md-4 mt-5 bg-white rounded p-4">
+            <div className="align-items-center">
+              <h3 className="text-center">{file.name}</h3>
+              <p className="text-center text-md">
+                {t('no.preview')}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default PreviewModal;
+export default NoPreviewModal;

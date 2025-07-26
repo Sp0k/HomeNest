@@ -11,6 +11,7 @@ import FolderComponent from "../../components/DashboardComponents/FolderComponen
 import { getFolders, getFiles } from "../../redux/actionCreators/fileFoldersActionCreator";
 import UploadFile from "../../components/DashboardComponents/UploadFile/UploadFile";
 import PreviewModal from "../../components/DashboardComponents/Preview/PreviewModal";
+import NoPreviewModal from "../../components/DashboardComponents/Preview/NoPreviewModal";
 
 const DashboardPage = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
@@ -51,12 +52,12 @@ const DashboardPage = () => {
           onClose={() => setPreview(null)}
         />
       )}
-      {/* {noPreview && ( */}
-      {/*   <NoPreviewModal */}
-      {/*     file={preview.file} */}
-      {/*     onClose={() => setNoPreview(null)} */}
-      {/*   /> */}
-      {/* )} */}
+      {noPreview && (
+        <NoPreviewModal
+          file={noPreview}
+          onClose={() => setNoPreview(null)}
+        />
+      )}
       <Navbar />
       <SubBar
         setIsCreateFolderModalOpen={setIsCreateFolderModalOpen}
