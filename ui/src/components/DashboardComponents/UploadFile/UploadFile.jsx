@@ -103,7 +103,7 @@ const UploadFile = ({ setIsUploadFileModalOpen }) => {
                   className: `dropzone ${isDragActive ? 'dropzone--active' : ''}`
                 })}
               >
-                <input {...getInputProps()} webkitdirectory="true" directory="true" />
+                <input {...getInputProps()} />
                 <p>{isDragActive ? t('drop.file') : t('select.file')}</p>
               </div>
               <aside className="mt-2">
