@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@szhsin/react-menu": "^4.4.1",
     "react-dropzone": "^14.3.8",
     "react-toastify": "^11.0.5"
   }

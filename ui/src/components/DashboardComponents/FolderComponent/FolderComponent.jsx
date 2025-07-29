@@ -3,7 +3,13 @@ import { shallowEqual, useSelector } from "react-redux";
 import ShowItems from "../ShowItems/ShowItems";
 import ItemType from "../../Types/itemType";
 
-const FolderComponent = ({ onPreview, onNoPreview }) => {
+const FolderComponent = ({ 
+  onPreview, 
+  onNoPreview, 
+  setIsRenameItemModalOpen, 
+  setIsDeleteItemModalOpen,
+  setTargetItem 
+}) => {
   const { userFolders, userFiles, isLoading } = useSelector(
     state => ({ 
       userFolders: state.fileFolders.userFolders,
@@ -40,6 +46,9 @@ const FolderComponent = ({ onPreview, onNoPreview }) => {
           items={userFolders}
           onPreview={onPreview}
           onNoPreview={onNoPreview}
+          setIsRenameItemModalOpen={setIsRenameItemModalOpen}
+          setIsDeleteItemModalOpen={setIsDeleteItemModalOpen}
+          setTargetItem={setTargetItem}
         />
       )}
       {hasFiles && (
@@ -49,6 +58,9 @@ const FolderComponent = ({ onPreview, onNoPreview }) => {
           items={userFiles}
           onPreview={onPreview}
           onNoPreview={onNoPreview}
+          setIsRenameItemModalOpen={setIsRenameItemModalOpen}
+          setIsDeleteItemModalOpen={setIsDeleteItemModalOpen}
+          setTargetItem={setTargetItem}
         />
       )}
     </div>

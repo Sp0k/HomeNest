@@ -12,11 +12,16 @@ import { getFolders, getFiles } from "../../redux/actionCreators/fileFoldersActi
 import UploadFile from "../../components/DashboardComponents/UploadFile/UploadFile";
 import PreviewModal from "../../components/DashboardComponents/Preview/PreviewModal";
 import NoPreviewModal from "../../components/DashboardComponents/Preview/NoPreviewModal";
+import RenameItem from "../../components/DashboardComponents/RenameFile/RenameFile";
+import DeleteItem from "../../components/DashboardComponents/DeleteFile/DeleteFile";
 
 const DashboardPage = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [isCreateFileModalOpen,   setIsCreateFileModalOpen]   = useState(false);
   const [isUploadFileModalOpen,   setIsUploadFileModalOpen]   = useState(false);
+  const [isRenameItemModalOpen,   setIsRenameItemModalOpen]   = useState(false);
+  const [isDeleteItemModalOpen,   setIsDeleteItemModalOpen]   = useState(false);
+  const [targetItem, setTargetItem] = useState(null);
   const [preview, setPreview] = useState(null);
   const [noPreview, setNoPreview] = useState(null);
 
@@ -45,6 +50,12 @@ const DashboardPage = () => {
       {isUploadFileModalOpen && (
         <UploadFile setIsUploadFileModalOpen={setIsUploadFileModalOpen} />
       )}
+      {isRenameItemModalOpen && (
+        <RenameItem setIsRenameItemModalOpen={setIsRenameItemModalOpen} item={targetItem} setRenameItem={setTargetItem} />
+      )}
+      {isDeleteItemModalOpen && (
+        <DeleteItem setIsDeleteItemModalOpen={setIsDeleteItemModalOpen} item={targetItem} setTargetItem={setTargetItem} />
+      )}
       {preview && (
         <PreviewModal
           file={preview.file}
@@ -69,12 +80,18 @@ const DashboardPage = () => {
         <Route index element={<FolderComponent 
           onPreview={(f, type) => setPreview({file: f, type})} 
           onNoPreview={f => setNoPreview(f)}
+          setIsRenameItemModalOpen={setIsRenameItemModalOpen}
+          setIsDeleteItemModalOpen={setIsDeleteItemModalOpen}
+          setTargetItem={setTargetItem}
         />} />
         <Route
           path="folder/:folderId"
           element={<FolderComponent 
             onPreview={(f, type) => setPreview({file: f, type})} 
             onNoPreview={f => setNoPreview(f)}
+            setIsRenameItemModalOpen={setIsRenameItemModalOpen}
+            setIsDeleteItemModalOpen={setIsDeleteItemModalOpen}
+            setTargetItem={setTargetItem}
           />}
         />
       </Routes>
