@@ -29,6 +29,11 @@ const fileFolderReducer = (state = initialState, action) => {
         ...state,
         currentFolder: action.payload,
       };
+    case types.REMOVE_FOLDER:
+      return {
+        ...state,
+        userFolders: state.userFolders.filter(f => f.name !== action.payload),
+      };
     case types.ADD_FILES:
       return {
         ...state,
@@ -38,6 +43,11 @@ const fileFolderReducer = (state = initialState, action) => {
       return {
         ...state,
         userFiles: [...state.userFiles, action.payload],
+      };
+    case types.REMOVE_FILE:
+      return {
+        ...state,
+        userFiles: state.userFiles.filter(f => f.name !== action.payload),
       };
     default: 
       return state;
