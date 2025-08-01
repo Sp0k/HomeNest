@@ -11,6 +11,7 @@ import { changeFolder, downloadFile } from '../../../redux/actionCreators/fileFo
 import { selectFileIcon }     from './FileIcons';
 import { getFileExt,
          getPreviewType }     from '../../../utils/filePreviewUtils';
+import ItemCard from '../../Common/ItemCard/ItemCard';
 
 const ShowItems = ({ 
   title, 
@@ -78,37 +79,28 @@ const ShowItems = ({
     return idx === -1 ? fileName : fileName.substring(0, idx);
   };
 
+  const handleDragStart = (e, item) => {
+    console.log("Drag")
+  }
+
   return (
     <div className="w-100" onClick={handleClose}>
       {title && <h4 className="text-center border-bottom">{title}</h4>}
 
       <div className="row gap-2 p-4 flex-wrap">
         {items.map((item, idx) => (
-          <div
+          <ItemCard
             key={idx}
-            className="col-md-2 border py-3 text-center d-flex flex-column"
-            onDoubleClick={() => handleDoubleClick(item)}
-            onContextMenu={e => {
-              e.preventDefault();
-              handleContextMenu(e, item);
-            }}
-          >
-            <FontAwesomeIcon
-              icon={ type === ItemType.FOLDER ? faFolder : selectFileIcon(item.name) }
-              size="4x"
-              className="mb-3"
-            />
-            <span
-              className="file-name text-truncate"
-              title={getDisplayName(item.name)}
-            >
-              {getDisplayName(item.name)}
-            </span>
-          </div>
+            item={item}
+            type={type}
+            onDoubleClick={handleDoubleClick}
+            onContextMenu={handleContextMenu}
+            onDragStart={handleDragStart}
+            getDisplayName={getDisplayName}
+          />
         ))}
       </div>
 
-      {/* ← Hook the menu here, using the same `items` + our handlers */}
       <ContextMenu
         open={open}
         anchorPoint={anchorPoint}
