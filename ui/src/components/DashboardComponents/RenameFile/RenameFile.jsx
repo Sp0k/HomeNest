@@ -1,11 +1,10 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
-import ItemType from '../../Types/itemType';
 import { useTranslation } from 'react-i18next';
 import { renameItem } from '../../../redux/actionCreators/fileFoldersActionCreator';
+import ItemType from '../../Types/itemType';
+import ModalOverlay from '../../Common/ModalOverlay/ModalOverlay';
 
 const RenameItem = ({ item, setIsRenameItemModalOpen, setRenameItem }) => {
   const { t } = useTranslation();
@@ -82,45 +81,25 @@ const RenameItem = ({ item, setIsRenameItemModalOpen, setRenameItem }) => {
   }
 
   return (
-    <div 
-      className="col-md-12 position-fixed top-0 left-0 w-100 h-100"
-      style={{ background: "rgba(0, 0, 0, 0.4)", zIndex: 9999 }}
-    >
-      <div className='row align-items-center justify-content-center'>
-        <div className="col-md-4 mt-5 bg-white rounded p-4">
-          <div className="d-flex justify-content-between">
-            <h4>{t('rename')}</h4>
-            <button className="btn" onClick={() => setIsRenameItemModalOpen(false)}>
-              <FontAwesomeIcon
-                icon={faTimes}
-                className="text-black"
-                size="sm"
-              />
-            </button>
-          </div>
-          <hr />
-          <div className='d-flex flex-column align-items-center'>
-            <form className='mt-3 w-100' onSubmit={handleSubmit}>
-              <div className='form-group'>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="rename"
-                  placeholder={t('rename.placeholder')}
-                  onChange={(e) => setNewName(e.target.value)}
-                />
-              </div>
-              <button
-                type="submit" 
-                className="btn btn-primary mt-5 form-control"
-              >
-                {t('rename')}
-              </button>
-            </form>
-          </div>
+    <ModalOverlay title={t(`rename.${getType(item.name)}`)} onClose={() => setIsRenameItemModalOpen(false)}>
+      <form className='mt-3 w-100' onSubmit={handleSubmit}>
+        <div className='form-group'>
+          <input
+            type="text"
+            className="form-control"
+            id="rename"
+            placeholder={t('rename.placeholder')}
+            onChange={(e) => setNewName(e.target.value)}
+          />
         </div>
-      </div>
-    </div>
+        <button
+          type="submit" 
+          className="btn btn-primary mt-5 form-control"
+        >
+          {t('rename')}
+        </button>
+      </form>
+    </ModalOverlay>
   );
 }
 
