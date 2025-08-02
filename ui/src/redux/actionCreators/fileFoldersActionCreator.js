@@ -1,8 +1,9 @@
-import axios from 'axios';
 import i18n from 'i18next';
 import { toast } from 'react-toastify';
 import ItemType from '../../components/Types/itemType';
 
+import apiClient from '../../utils/apiClient';
+import ItemType from '../../components/Types/itemType';
 import * as types from "../actionTypes/fileFoldersActionTypes";
 
 // actions
@@ -50,19 +51,10 @@ const removeFile = (payload) => ({
 // action creators
 
 export const createFolder = (data) => async (dispatch) => {
-  const requestBody = {
-    parentPath: data.parent,
-    folderName: data.name,
-  };
-
+  const { parent, name } = data;
   try {
-    const response = await axios.post(
-      '/api/createFolder',
-      requestBody
-    );
-
+    const response = await apiClient.createFolder(parent, name);
     const newFolderNode = response.data.node;
-
     dispatch(addFolder(newFolderNode));
     toast.success(i18n.t('success.folder'));
   } catch (error) {
@@ -73,13 +65,8 @@ export const createFolder = (data) => async (dispatch) => {
 export const getFolders = (parentPath = "/") => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await axios.get(
-      '/api/getFolders',
-      { params: { path: parentPath }, }
-    );
-
+    const response = await apiClient.getFolders(parentPath);
     const nodes = response.data;
-
     dispatch(addFolders(nodes || []));
     dispatch(setLoading(false));
   } catch (error) {
@@ -95,11 +82,7 @@ export const changeFolder = (folderId) => async (dispatch) => {
 export const getFiles = (parentPath = "/") => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await axios.get(
-      '/api/getFiles',
-      { params: { path: parentPath }, }
-    );
-
+    const response = await apiClient.getFiles(parentPath);
     const nodes = response.data;
     dispatch(addFiles(nodes || []));
     dispatch(setLoading(false));
@@ -109,20 +92,11 @@ export const getFiles = (parentPath = "/") => async (dispatch) => {
 };
 
 export const createFile = (data) => async (dispatch) => {
-  const requestBody = {
-    parentPath: data.parent,
-    fileName: data.name,
-    fileType: data.type,
-  }
+  const { parent, name, type } = data;
 
   try {
-    const response = await axios.post(
-      '/api/createFile',
-      requestBody
-    );
-
+    const response = await apiClient.createFile(parent, name, type);
     const newFileNode = response.data.node;
-
     dispatch(addFile(newFileNode));
     toast.success(i18n.t('success.file'));
 
@@ -130,6 +104,7 @@ export const createFile = (data) => async (dispatch) => {
     console.log("Now open file in correct ONLYOFFICE app");
   } catch (error) {
     console.error("Failed to create file:", error);
+    toast.error(i18n.t('error.file'));
   }
 }
 
@@ -137,17 +112,11 @@ export const uploadFiles = (data, onSuccess) => async (dispatch) => {
   dispatch(setLoading(true));
 
   try {
-    await axios.post(
-      '/api/upload',
-      data,
-      { headers: { 'Content-Type': 'multipart/form-data' } }
-    );
 
+    await apiClient.uploadFiles(data);
     const parent = data.get('parentPath');
     await dispatch(getFiles(parent));
-
     toast.success(i18n.t('success.upload'));
-
     if (typeof onSuccess === 'function') {
       onSuccess();
     }
@@ -164,11 +133,7 @@ export const renameItem = (data) => async (dispatch) => {
 
   dispatch(setLoading(true));
   try {
-    const response = await axios.post('/api/rename', {
-      parentPath: parent,
-      currFile: currItem,
-      newName: name,
-    });
+    const response = await apiClient.renameItem(parent, currItem, name, type);
 
     const newFileNode = response.data.node;
 
@@ -190,12 +155,9 @@ export const renameItem = (data) => async (dispatch) => {
 };
 
 export const downloadFile = (data) => async () => {
+  const { path } = data;
   try {
-    const response = await axios.get('/api/download', {
-      params: { path: data.path },
-      responseType: 'blob',
-    });
-    
+    const response = await apiClient.downloadFile(path);
     const blob = new Blob([response.data]);
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -216,7 +178,7 @@ export const downloadFile = (data) => async () => {
 export const deleteItem = (data) => async (dispatch) => {
   const { path, name, type } = data;
   try {
-    await axios.delete('/api/delete', { params: { path } });
+    await apiClient.deleteItem(path);
     if (type === ItemType.FOLDER) {
       dispatch(removeFolder(name));
     } else {

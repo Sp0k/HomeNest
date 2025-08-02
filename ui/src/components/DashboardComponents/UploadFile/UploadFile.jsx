@@ -1,13 +1,11 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDropzone } from 'react-dropzone';
-
-import './UploadFile.css';
 import { uploadFiles } from '../../../redux/actionCreators/fileFoldersActionCreator';
 import { toast } from 'react-toastify';
+
+import './UploadFile.css';
+import FormModal from '../../Common/FormModal/FormModal';
 
 const UploadFile = ({ setIsUploadFileModalOpen }) => {
   const { t } = useTranslation();
@@ -89,43 +87,27 @@ const UploadFile = ({ setIsUploadFileModalOpen }) => {
 
 
   return (
-    <div
-      className="col-md-12 position-fixed top-0 left-0 w-100 h-100"
-      style={{ background: 'rgba(0, 0, 0, 0.4)', zIndex: 9999 }}
+    <FormModal
+      title={t('upload.file')}
+      confirmText={t('upload.file')}
+      onConfirm={handleSubmit}
+      onCancel={() => setIsUploadFileModalOpen(false)}
     >
-      <div className="row align-items-center justify-content-center">
-        <div className="col-md-4 mt-5 bg-white rounded p-4">
-          <div className="d-flex justify-content-between">
-            <h4>{t('upload.file')}</h4>
-            <button className="btn" onClick={() => setIsUploadFileModalOpen(false)}>
-              <FontAwesomeIcon icon={faTimes} size="sm" />
-            </button>
-          </div>
-          <hr />
-
-          <form onSubmit={handleSubmit} className="mt-3">
-            <section className="container">
-              <div
-                {...getRootProps({
-                  className: `dropzone ${isDragActive ? 'dropzone--active' : ''}`
-                })}
-              >
-                <input {...getInputProps()} />
-                <p>{isDragActive ? t('drop.file') : t('select.file')}</p>
-              </div>
-              <aside className="mt-2">
-                <h4>{t('files')}</h4>
-                <ul>{fileList}</ul>
-              </aside>
-            </section>
-
-            <button type="submit" className="btn btn-primary mt-4 w-100">
-              {t('upload.file')}
-            </button>
-          </form>
+      <section className="container">
+        <div
+          {...getRootProps({
+            className: `dropzone ${isDragActive ? 'dropzone--active' : ''}`
+          })}
+        >
+          <input {...getInputProps()} />
+          <p>{isDragActive ? t('drop.file') : t('select.file')}</p>
         </div>
-      </div>
-    </div>
+        <aside className="mt-2">
+          <h4>{t('files')}</h4>
+          <ul>{fileList}</ul>
+        </aside>
+      </section>
+    </FormModal>
   );
 };
 
