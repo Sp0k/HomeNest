@@ -22,9 +22,6 @@ const ShowItems = ({
   setIsDeleteItemModalOpen,
   setTargetItem,
 }) => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const { open, current, anchorPoint, onContextMenu, closeMenu } = useContextMenu();
   const { getDisplayName, openItem, onContextAction } = useItemActions({
     onPreview,
@@ -33,8 +30,6 @@ const ShowItems = ({
     openRenameModal: () => setIsRenameItemModalOpen(true),
     openDeleteModal: () => setIsDeleteItemModalOpen(true),
   });
-
-  const handleClose = () => setOpen(false);
 
   const handleDragStart = (e, item) => {
     console.log("Drag")
@@ -64,8 +59,8 @@ const ShowItems = ({
         type={type}
         onClose={closeMenu}
         onOpenClick={() => onContextAction(ContextAction.OPEN, current)}
-        onDeleteClick={() => onContextAction(ContextAction.RENAME, current)}
-        onRenameClick={() => onContextAction(ContextAction.DELETE, current)}
+        onDeleteClick={() => onContextAction(ContextAction.DELETE, current)}
+        onRenameClick={() => onContextAction(ContextAction.RENAME, current)}
         onDownloadClick={() => onContextAction(ContextAction.DOWNLOAD, current)}
       />
     </div>
