@@ -3,8 +3,11 @@ import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { renameItem } from '../../../redux/actionCreators/fileFoldersActionCreator';
+import { getItemType } from '../../../utils/itemTypeUtils';
+import { getFileExt } from '../../../utils/filePreviewUtils';
+
 import ItemType from '../../Types/itemType';
-import ModalOverlay from '../../Common/ModalOverlay/ModalOverlay';
+import FormModal from '../../Common/FormModal/FormModal';
 
 const RenameItem = ({ item, setIsRenameItemModalOpen, setRenameItem }) => {
   const { t } = useTranslation();
@@ -32,12 +35,6 @@ const RenameItem = ({ item, setIsRenameItemModalOpen, setRenameItem }) => {
         return true;
       return false;
     }
-  }
-
-  const getType = (name) => {
-    if (userFolders.find(f => f.name === name))
-      return ItemType.FOLDER;
-    return ItemType.FILE;
   }
 
   const getFileExt = filename => {
@@ -81,25 +78,22 @@ const RenameItem = ({ item, setIsRenameItemModalOpen, setRenameItem }) => {
   }
 
   return (
-    <ModalOverlay title={t(`rename.${getType(item.name)}`)} onClose={() => setIsRenameItemModalOpen(false)}>
-      <form className='mt-3 w-100' onSubmit={handleSubmit}>
-        <div className='form-group'>
-          <input
-            type="text"
-            className="form-control"
-            id="rename"
-            placeholder={t('rename.placeholder')}
-            onChange={(e) => setNewName(e.target.value)}
-          />
-        </div>
-        <button
-          type="submit" 
-          className="btn btn-primary mt-5 form-control"
-        >
-          {t('rename')}
-        </button>
-      </form>
-    </ModalOverlay>
+    <FormModal
+      title={t(`rename.${getItemType(item.name, userFolders)}`)}
+      confirmText={t('rename')}
+      onConfirm={handleSubmit}
+      onCancel={() => setIsRenameItemModalOpen(false)}
+    >
+      <div className='form-group'>
+        <input
+          type="text"
+          className="form-control"
+          id="rename"
+          placeholder={t('rename.placeholder')}
+          onChange={(e) => setNewName(e.target.value)}
+        />
+      </div>
+    </FormModal>
   );
 }
 

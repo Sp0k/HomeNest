@@ -4,7 +4,7 @@ import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { createFolder } from '../../../redux/actionCreators/fileFoldersActionCreator';
 import { toast } from 'react-toastify';
 
-import ModalOverlay from '../../Common/ModalOverlay/ModalOverlay';
+import FormModal from '../../Common/FormModal/FormModal';
 
 const CreateFolder = ({ setIsCreateFolderModalOpen }) => {
   const { t } = useTranslation();
@@ -52,26 +52,23 @@ const CreateFolder = ({ setIsCreateFolderModalOpen }) => {
   }
 
   return (
-    <ModalOverlay title={t('create.folder')} onClose={() => setIsCreateFolderModalOpen(false)}>
-      <form className='mt-3 w-100' onSubmit={handleSubmit}>
-        <div className='form-group'>
-          <input
-            type="text"
-            className="form-control"
-            id="folderName"
-            placeholder={t('folder.name')}
-            value={folderName}
-            onChange={(e) => setFolderName(e.target.value)}
-          />
-        </div>
-        <button
-          type="submit" 
-          className="btn btn-primary mt-5 form-control"
-        >
-          {t('create.folder')}
-        </button>
-      </form>
-    </ModalOverlay>
+    <FormModal
+      title={t('create.folder')}
+      confirmText={t('create.folder')}
+      onConfirm={handleSubmit}
+      onCancel={() => setIsCreateFolderModalOpen(false)}
+    >
+      <div className='form-group w-100'>
+        <input
+          type="text"
+          className="form-control"
+          id="folderName"
+          placeholder={t('folder.name')}
+          value={folderName}
+          onChange={(e) => setFolderName(e.target.value)}
+        />
+      </div>
+    </FormModal>
   );
 }
 

@@ -2,9 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { createFile } from '../../../redux/actionCreators/fileFoldersActionCreator';
-import Select from 'react-select';
 import { toast } from 'react-toastify';
-import ModalOverlay from '../../Common/ModalOverlay/ModalOverlay';
+
+import Select from 'react-select';
+import FormModal from '../../Common/FormModal/FormModal';
 
 const CreateFile = ({ setIsCreateFileModalOpen }) => {
   const { t } = useTranslation();
@@ -68,34 +69,31 @@ const CreateFile = ({ setIsCreateFileModalOpen }) => {
   }
 
   return (
-    <ModalOverlay title={t('create.file')} onClose={() => setIsCreateFileModalOpen(false)}>
-      <Select
-        className="basic-single w-100"
-        classNamePrefix="select"
-        isClearable={false}
-        isSearchable={false}
-        options={fileTypeOptions}
-        defaultValue={fileTypeOptions[0]}
-        onChange={(e) => setFileType(e.value)}
-      />
-      <form className='mt-3 w-100' onSubmit={handleSubmit}>
-        <div className='form-group'>
-          <input
-            type="text"
-            className="form-control"
-            id="fileName"
-            placeholder={t('file.name')}
-            onChange={(e) => setFileName(e.target.value)}
-          />
-        </div>
-        <button
-          type="submit" 
-          className="btn btn-primary mt-5 form-control"
-        >
-          {t('create.file')}
-        </button>
-      </form>
-    </ModalOverlay>
+    <FormModal
+      title={t('create.file')}
+      confirmText={t('create.file')}
+      onConfirm={handleSubmit}
+      onCancel={() => setIsCreateFileModalOpen(false)}
+    >
+      <div className='form-group'>
+        <Select
+          className="basic-single w-100 mb-2"
+          classNamePrefix="select"
+          isClearable={false}
+          isSearchable={false}
+          options={fileTypeOptions}
+          defaultValue={fileTypeOptions[0]}
+          onChange={(e) => setFileType(e.value)}
+        />
+        <input
+          type="text"
+          className="form-control"
+          id="fileName"
+          placeholder={t('file.name')}
+          onChange={(e) => setFileName(e.target.value)}
+        />
+      </div>
+    </FormModal>
   );
 }
 
