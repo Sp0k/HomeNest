@@ -1,6 +1,3 @@
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolder }    from '@fortawesome/free-solid-svg-icons';
 import { useNavigate }  from 'react-router-dom';
 import { useDispatch }  from 'react-redux';
 
@@ -8,10 +5,10 @@ import ItemType         from '../../Types/itemType';
 import ContextMenu      from '../ContextMenu/ContextMenu';
 import './ShowItems.css';
 import { changeFolder, downloadFile } from '../../../redux/actionCreators/fileFoldersActionCreator';
-import { selectFileIcon }     from './FileIcons';
 import { getFileExt,
          getPreviewType }     from '../../../utils/filePreviewUtils';
 import ItemCard from '../../Common/ItemCard/ItemCard';
+import useContextMenu from '../../../hooks/useContextMenu';
 
 const ShowItems = ({ 
   title, 
@@ -26,15 +23,7 @@ const ShowItems = ({
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [anchorPoint, setAnchorPoint] = useState({ x: 0, y: 0 });
-  const [open,        setOpen]        = useState(false);
-  const [current,     setCurrent]     = useState(null);
-
-  const handleContextMenu = (e, item) => {
-    setCurrent(item);
-    setAnchorPoint({ x: e.clientX, y: e.clientY });
-    setOpen(true);
-  };
+  const { open, current, anchorPoint, onContextMenu, closeMenu } = useContextMenu();
 
   const handleClose = () => setOpen(false);
 
@@ -84,7 +73,7 @@ const ShowItems = ({
   }
 
   return (
-    <div className="w-100" onClick={handleClose}>
+    <div className="w-100" onClick={closeMenu}>
       {title && <h4 className="text-center border-bottom">{title}</h4>}
 
       <div className="row gap-2 p-4 flex-wrap">
@@ -94,7 +83,7 @@ const ShowItems = ({
             item={item}
             type={type}
             onDoubleClick={handleDoubleClick}
-            onContextMenu={handleContextMenu}
+            onContextMenu={e => onContextMenu(e, item)}
             onDragStart={handleDragStart}
             getDisplayName={getDisplayName}
           />
@@ -105,7 +94,7 @@ const ShowItems = ({
         open={open}
         anchorPoint={anchorPoint}
         type={type}
-        onClose={handleClose}
+        onClose={closeMenu}
         onOpenClick={handleOpenClick}
         onDeleteClick={handleDeleteClick}
         onRenameClick={handleRenameClick}
