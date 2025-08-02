@@ -9,6 +9,8 @@ import { getFileExt,
          getPreviewType }     from '../../../utils/filePreviewUtils';
 import ItemCard from '../../Common/ItemCard/ItemCard';
 import useContextMenu from '../../../hooks/useContextMenu';
+import useItemActions from '../../../hooks/useItemActions';
+import ContextAction from '../../../enum/contextAction';
 
 const ShowItems = ({ 
   title, 
@@ -24,49 +26,15 @@ const ShowItems = ({
   const dispatch = useDispatch();
 
   const { open, current, anchorPoint, onContextMenu, closeMenu } = useContextMenu();
+  const { getDisplayName, openItem, onContextAction } = useItemActions({
+    onPreview,
+    onNoPreview,
+    setTargetItem,
+    openRenameModal: () => setIsRenameItemModalOpen(true),
+    openDeleteModal: () => setIsDeleteItemModalOpen(true),
+  });
 
   const handleClose = () => setOpen(false);
-
-  const handleDoubleClick = (item) => {
-    if (type === ItemType.FOLDER) {
-      dispatch(changeFolder(item.path));
-      navigate(`/dashboard/folder/${encodeURIComponent(item.path)}`);
-    } else {
-      handleFileBehaviour(item);
-    }
-  };
-  const handleFileBehaviour = (file) => {
-    const previewType = getPreviewType(getFileExt(file.name));
-    if (previewType) onPreview(file, previewType);
-    else onNoPreview(file);
-  };
-
-  const handleOpenClick = () => {
-    handleDoubleClick(current);
-    handleClose();
-  };
-
-  const handleDeleteClick = () => {
-    setTargetItem(current);
-    setIsDeleteItemModalOpen(true);
-    handleClose();
-  };
-
-  const handleRenameClick = () => {
-    setTargetItem(current);
-    setIsRenameItemModalOpen(true);
-    handleClose();
-  };
-
-  const handleDownloadClick = () => {
-    dispatch(downloadFile(current))
-    handleClose();
-  };
-
-  const getDisplayName = (fileName) => {
-    const idx = fileName.lastIndexOf('.');
-    return idx === -1 ? fileName : fileName.substring(0, idx);
-  };
 
   const handleDragStart = (e, item) => {
     console.log("Drag")
@@ -82,7 +50,7 @@ const ShowItems = ({
             key={idx}
             item={item}
             type={type}
-            onDoubleClick={handleDoubleClick}
+            onDoubleClick={() => openItem(item)}
             onContextMenu={e => onContextMenu(e, item)}
             onDragStart={handleDragStart}
             getDisplayName={getDisplayName}
@@ -95,10 +63,10 @@ const ShowItems = ({
         anchorPoint={anchorPoint}
         type={type}
         onClose={closeMenu}
-        onOpenClick={handleOpenClick}
-        onDeleteClick={handleDeleteClick}
-        onRenameClick={handleRenameClick}
-        onDownloadClick={handleDownloadClick}
+        onOpenClick={() => onContextAction(ContextAction.OPEN, current)}
+        onDeleteClick={() => onContextAction(ContextAction.RENAME, current)}
+        onRenameClick={() => onContextAction(ContextAction.DELETE, current)}
+        onDownloadClick={() => onContextAction(ContextAction.DOWNLOAD, current)}
       />
     </div>
   );
