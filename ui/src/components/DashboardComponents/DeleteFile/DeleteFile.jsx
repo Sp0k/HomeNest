@@ -5,9 +5,11 @@ import { getItemType } from "../../../utils/itemTypeUtils";
 
 import FormModal from "../../Common/FormModal/FormModal";
 
+
 const DeleteItem = ({ item, setIsDeleteItemModalOpen, setTargetItem }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
   const { userFolders } = useSelector(
     state => ({
       userFolders: state.fileFolders.userFolders,

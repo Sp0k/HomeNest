@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import { toast } from 'react-toastify';
+import ItemType from '../../components/Types/itemType';
 
 import apiClient from '../../utils/apiClient';
 import ItemType from '../../components/Types/itemType';
@@ -111,6 +112,7 @@ export const uploadFiles = (data, onSuccess) => async (dispatch) => {
   dispatch(setLoading(true));
 
   try {
+
     await apiClient.uploadFiles(data);
     const parent = data.get('parentPath');
     await dispatch(getFiles(parent));
