@@ -20,7 +20,7 @@ const DeleteItem = ({ item, setIsDeleteItemModalOpen, setTargetItem }) => {
     const data = {
       path: item.path,
       name: item.name,
-      type: getType(item.name),
+      type: getItemType(item.name, userFolders),
     };
     dispatch(deleteItem(data));
     setIsDeleteItemModalOpen(false);

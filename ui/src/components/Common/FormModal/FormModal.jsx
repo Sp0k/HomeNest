@@ -14,8 +14,7 @@ const FormModal = ({
     <ModalOverlay title={title} onClose={onCancel}>
       <form
         onSubmit={e => {
-          e.preventDefault();
-          onConfirm();
+          onConfirm(e);
         }}
         className="w-100"
       >

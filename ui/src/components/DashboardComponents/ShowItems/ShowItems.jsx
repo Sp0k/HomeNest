@@ -1,28 +1,26 @@
-import { useNavigate }  from 'react-router-dom';
-import { useDispatch }  from 'react-redux';
+import { getFolders, getFiles } from '../../../redux/actionCreators/fileFoldersActionCreator';
 
-import ItemType         from '../../Types/itemType';
-import ContextMenu      from '../ContextMenu/ContextMenu';
 import './ShowItems.css';
-import { changeFolder, downloadFile } from '../../../redux/actionCreators/fileFoldersActionCreator';
-import { getFileExt,
-         getPreviewType }     from '../../../utils/filePreviewUtils';
+import ContextMenu      from '../ContextMenu/ContextMenu';
 import ItemCard from '../../Common/ItemCard/ItemCard';
 import useContextMenu from '../../../hooks/useContextMenu';
 import useItemActions from '../../../hooks/useItemActions';
 import ContextAction from '../../../enum/contextAction';
+import { useDispatch } from 'react-redux';
 
 
 const ShowItems = ({ 
   title, 
   items, 
   type, 
+  currentFolder,
   onPreview, 
   onNoPreview, 
   setIsRenameItemModalOpen, 
   setIsDeleteItemModalOpen,
   setTargetItem,
 }) => {
+  const dispatch = useDispatch();
   const { open, current, anchorPoint, onContextMenu, closeMenu } = useContextMenu();
   const { getDisplayName, openItem, onContextAction } = useItemActions({
     onPreview,
@@ -32,8 +30,9 @@ const ShowItems = ({
     openDeleteModal: () => setIsDeleteItemModalOpen(true),
   });
 
-  const handleDragStart = (e, item) => {
-    console.log("Drag")
+  const fetchItems = (path) => {
+    dispatch(getFolders(path));
+    dispatch(getFiles(path));
   }
 
   return (
@@ -48,8 +47,8 @@ const ShowItems = ({
             type={type}
             onDoubleClick={() => openItem(item)}
             onContextMenu={e => onContextMenu(e, item)}
-            onDragStart={handleDragStart}
             getDisplayName={getDisplayName}
+            onDropSuccess={() => fetchItems(currentFolder)}
           />
         ))}
       </div>

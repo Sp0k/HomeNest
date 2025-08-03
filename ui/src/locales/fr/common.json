@@ -33,6 +33,7 @@
   "error.rename.folder": "Le dossier n'a pas pu être renommé",
   "error.delete.file":   "Le fichier n'a pas pu être supprimé",
   "error.delete.folder": "Le dossier n'a pas pu être supprimé",
+  "error.move": "Impossible de déplacer l’élément",
   "success.folder": "Dossier créé avec succès",
   "success.file": "Fichier créé avec succès",
   "success.upload": "Fichiers téléversé avec succès",

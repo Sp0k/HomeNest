@@ -21,6 +21,7 @@ func main() {
 	r.HandleFunc("/api/download", nest.DownloadHandler).Methods("GET")
 	r.HandleFunc("/api/rename", nest.RenameItemHandler).Methods("POST")
 	r.HandleFunc("/api/delete", nest.DeleteItemHandler).Methods("DELETE")
+	r.HandleFunc("/api/move", nest.MoveHandler).Methods("POST")
 
 	corsOpts := handlers.CORS(
 		handlers.AllowedOrigins([]string{"http://localhost:3000"}),
