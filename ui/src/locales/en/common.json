@@ -40,6 +40,7 @@
   "success.rename.folder": "Folder renamed successfully",
   "success.delete.file": "File deleted successfully",
   "success.delete.folder": "Folder deleted successfully",
+  "success.move": "Item moved successfully",
   "loading": "Loading...",
   "folder.empty": "There is nothing here yet...",
   "folders": "Folders",

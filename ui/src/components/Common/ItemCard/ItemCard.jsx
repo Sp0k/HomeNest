@@ -35,7 +35,8 @@ const ItemCard = ({
     drop: async dragged => {
       try {
         await apiClient.moveItem(dragged.path, item.path);
-        onDropSuccess && onDropSuccess();
+        onDropSuccess?.();
+        toast.success(t('success.move'));
       } catch (err) {
         console.error(err);
         toast.error(t('error.move'));
