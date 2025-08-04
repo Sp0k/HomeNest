@@ -5,6 +5,7 @@ import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import { selectFileIcon } from "../../DashboardComponents/ShowItems/FileIcons";
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { isDescendant } from '../../../utils/pathUtils';
 
 import ItemType from "../../Types/itemType";
 import apiClient from '../../../utils/apiClient';
@@ -27,7 +28,10 @@ const ItemCard = ({
 
   const [{ isOver, canDrop }, drop] = useDrop({
     accept: 'ITEM',
-    canDrop: dragged => dragged.path !== item.path && type === ItemType.FOLDER,
+    canDrop: dragged =>
+      type === ItemType.FOLDER &&
+      dragged.path !== item.path &&
+      !isDescendant(dragged.path, item.path),
     drop: async dragged => {
       try {
         await apiClient.moveItem(dragged.path, item.path);
