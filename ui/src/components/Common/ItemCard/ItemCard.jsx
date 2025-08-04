@@ -64,7 +64,12 @@ const ItemCard = ({
       }}
       style={{
         opacity: isDragging ? 0.5 : 1,
-        background: isOver && canDrop ? 'rgba(0, 123, 255, 0.1)' : '',
+        border: isOver && canDrop
+          ? '2px dashed #007bff'
+          : '1px solid #dee2e6',
+        boxShadow: isOver && canDrop
+          ? '0 0 8px rgba(0,123,255,0.5)'
+          : 'none',
         cursor: 'move'
       }}
       ref={ref}
