@@ -29,6 +29,9 @@ const apiClient = {
 
   deleteItem: (path) =>
     axios.delete('/api/delete', { params: { path } }),
+
+  moveItem: (sourcePath, destPath) =>
+    axios.post('/api/move', { sourcePath, destPath }),
 };
 
 export default apiClient;

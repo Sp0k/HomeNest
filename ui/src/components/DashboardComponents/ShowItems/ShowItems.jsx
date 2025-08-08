@@ -1,12 +1,7 @@
-import { useNavigate }  from 'react-router-dom';
-import { useDispatch }  from 'react-redux';
+import { fetchItems } from '../../../utils/apiShortcuts';
 
-import ItemType         from '../../Types/itemType';
-import ContextMenu      from '../ContextMenu/ContextMenu';
 import './ShowItems.css';
-import { changeFolder, downloadFile } from '../../../redux/actionCreators/fileFoldersActionCreator';
-import { getFileExt,
-         getPreviewType }     from '../../../utils/filePreviewUtils';
+import ContextMenu      from '../ContextMenu/ContextMenu';
 import ItemCard from '../../Common/ItemCard/ItemCard';
 import useContextMenu from '../../../hooks/useContextMenu';
 import useItemActions from '../../../hooks/useItemActions';
@@ -17,6 +12,7 @@ const ShowItems = ({
   title, 
   items, 
   type, 
+  currentFolder,
   onPreview, 
   onNoPreview, 
   setIsRenameItemModalOpen, 
@@ -32,10 +28,6 @@ const ShowItems = ({
     openDeleteModal: () => setIsDeleteItemModalOpen(true),
   });
 
-  const handleDragStart = (e, item) => {
-    console.log("Drag")
-  }
-
   return (
     <div className="w-100" onClick={closeMenu}>
       {title && <h4 className="text-center border-bottom">{title}</h4>}
@@ -48,8 +40,8 @@ const ShowItems = ({
             type={type}
             onDoubleClick={() => openItem(item)}
             onContextMenu={e => onContextMenu(e, item)}
-            onDragStart={handleDragStart}
             getDisplayName={getDisplayName}
+            onDropSuccess={() => fetchItems(currentFolder)}
           />
         ))}
       </div>

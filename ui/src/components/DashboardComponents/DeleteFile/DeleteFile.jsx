@@ -20,7 +20,7 @@ const DeleteItem = ({ item, setIsDeleteItemModalOpen, setTargetItem }) => {
     const data = {
       path: item.path,
       name: item.name,
-      type: getType(item.name),
+      type: getItemType(item.name, userFolders),
     };
     dispatch(deleteItem(data));
     setIsDeleteItemModalOpen(false);
@@ -33,6 +33,8 @@ const DeleteItem = ({ item, setIsDeleteItemModalOpen, setTargetItem }) => {
         confirmText={t('delete')}
         onConfirm={handleDelete}
         onCancel={() => setIsDeleteItemModalOpen(false)}
+        cancelColor={'secondary'}
+        confirmColor={'danger'}
       >
       <p>{t('delete.message.1')}&nbsp;<em>{item.name}</em>{t('delete.message.2')}</p>
     </FormModal>

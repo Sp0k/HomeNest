@@ -14,6 +14,8 @@ import PreviewModal from "../../components/DashboardComponents/Preview/PreviewMo
 import NoPreviewModal from "../../components/DashboardComponents/Preview/NoPreviewModal";
 import RenameItem from "../../components/DashboardComponents/RenameFile/RenameFile";
 import DeleteItem from "../../components/DashboardComponents/DeleteFile/DeleteFile";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const DashboardPage = () => {
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
@@ -70,31 +72,33 @@ const DashboardPage = () => {
         />
       )}
       <Navbar />
-      <SubBar
-        setIsCreateFolderModalOpen={setIsCreateFolderModalOpen}
-        setIsCreateFileModalOpen={setIsCreateFileModalOpen}
-        setIsUploadFileModalOpen={setIsUploadFileModalOpen}
-      />
+      <DndProvider backend={HTML5Backend}>
+        <SubBar
+          setIsCreateFolderModalOpen={setIsCreateFolderModalOpen}
+          setIsCreateFileModalOpen={setIsCreateFileModalOpen}
+          setIsUploadFileModalOpen={setIsUploadFileModalOpen}
+        />
 
-      <Routes>
-        <Route index element={<FolderComponent 
-          onPreview={(f, type) => setPreview({file: f, type})} 
-          onNoPreview={f => setNoPreview(f)}
-          setIsRenameItemModalOpen={setIsRenameItemModalOpen}
-          setIsDeleteItemModalOpen={setIsDeleteItemModalOpen}
-          setTargetItem={setTargetItem}
-        />} />
-        <Route
-          path="folder/:folderId"
-          element={<FolderComponent 
+        <Routes>
+          <Route index element={<FolderComponent 
             onPreview={(f, type) => setPreview({file: f, type})} 
             onNoPreview={f => setNoPreview(f)}
             setIsRenameItemModalOpen={setIsRenameItemModalOpen}
             setIsDeleteItemModalOpen={setIsDeleteItemModalOpen}
             setTargetItem={setTargetItem}
-          />}
-        />
-      </Routes>
+          />} />
+          <Route
+            path="folder/:folderId"
+            element={<FolderComponent 
+              onPreview={(f, type) => setPreview({file: f, type})} 
+              onNoPreview={f => setNoPreview(f)}
+              setIsRenameItemModalOpen={setIsRenameItemModalOpen}
+              setIsDeleteItemModalOpen={setIsDeleteItemModalOpen}
+              setTargetItem={setTargetItem}
+            />}
+          />
+        </Routes>
+      </DndProvider>
     </>
   );
 };
