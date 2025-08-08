@@ -10,8 +10,9 @@ import (
 
 type RenameItemRequest struct {
 	ParentPath string `json:"parentPath"`
-	CurrFile string `json:"currFile"`
+	CurrName string `json:"currentName"`
 	NewName string `json:"newName"`
+	Type string `json:"type"`
 }
 
 func RenameItemHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,13 +23,16 @@ func RenameItemHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cleanParent := filepath.Clean(req.ParentPath)
+	if filepath.IsAbs(cleanParent) {
+		cleanParent = strings.TrimPrefix(cleanParent, string(filepath.Separator))
+	}
 	if strings.Contains(cleanParent, "..") {
 		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
 		return
 	}
 
 	newPath := filepath.Join(BaseDir, cleanParent, req.NewName)
-	currPath := filepath.Join(BaseDir, cleanParent, req.CurrFile)
+	currPath := filepath.Join(BaseDir, cleanParent, req.CurrName)
 
 	if err := os.Rename(currPath, newPath); err != nil {
 		http.Error(w, "Could not rename item" + err.Error(), http.StatusInternalServerError)

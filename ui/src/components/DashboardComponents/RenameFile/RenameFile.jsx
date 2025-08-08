@@ -52,7 +52,7 @@ const RenameItem = ({ item, setIsRenameItemModalOpen, setRenameItem }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const type = getType(item.name);
+    const type = getItemType(item.name, userFolders);
     if (newName) {
       if (newName.length >= 3) {
         const fullname = getFullName(newName);

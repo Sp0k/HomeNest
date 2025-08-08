@@ -1,4 +1,4 @@
-import { getFolders, getFiles } from '../../../redux/actionCreators/fileFoldersActionCreator';
+import { fetchItems } from '../../../utils/apiShortcuts';
 
 import './ShowItems.css';
 import ContextMenu      from '../ContextMenu/ContextMenu';
@@ -6,7 +6,6 @@ import ItemCard from '../../Common/ItemCard/ItemCard';
 import useContextMenu from '../../../hooks/useContextMenu';
 import useItemActions from '../../../hooks/useItemActions';
 import ContextAction from '../../../enum/contextAction';
-import { useDispatch } from 'react-redux';
 
 
 const ShowItems = ({ 
@@ -20,7 +19,6 @@ const ShowItems = ({
   setIsDeleteItemModalOpen,
   setTargetItem,
 }) => {
-  const dispatch = useDispatch();
   const { open, current, anchorPoint, onContextMenu, closeMenu } = useContextMenu();
   const { getDisplayName, openItem, onContextAction } = useItemActions({
     onPreview,
@@ -29,11 +27,6 @@ const ShowItems = ({
     openRenameModal: () => setIsRenameItemModalOpen(true),
     openDeleteModal: () => setIsDeleteItemModalOpen(true),
   });
-
-  const fetchItems = (path) => {
-    dispatch(getFolders(path));
-    dispatch(getFiles(path));
-  }
 
   return (
     <div className="w-100" onClick={closeMenu}>

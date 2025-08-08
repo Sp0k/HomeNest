@@ -1,7 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { shallowEqual, useSelector } from "react-redux";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
 import ShowItems from "../ShowItems/ShowItems";
 import ItemType from "../../Types/itemType";
@@ -44,7 +42,6 @@ const FolderComponent = ({
   return (
     <div className="col-md-12 w-100">
       {hasFolders && (
-        <DndProvider backend={HTML5Backend}>
           <ShowItems
             title={t("folders")}
             type={ItemType.FOLDER}
@@ -56,10 +53,8 @@ const FolderComponent = ({
             setIsDeleteItemModalOpen={setIsDeleteItemModalOpen}
             setTargetItem={setTargetItem}
           />
-        </DndProvider>
       )}
       {hasFiles && (
-        <DndProvider backend={HTML5Backend}>
           <ShowItems
             title={t('files')}
             type={ItemType.FILE}
@@ -71,7 +66,6 @@ const FolderComponent = ({
             setIsDeleteItemModalOpen={setIsDeleteItemModalOpen}
             setTargetItem={setTargetItem}
           />
-        </DndProvider>
       )}
     </div>
   )

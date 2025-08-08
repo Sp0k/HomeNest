@@ -6,6 +6,8 @@ const FormModal = ({
   confirmText,
   onConfirm,
   onCancel,
+  confirmColor = "primary",
+  cancelColor = "danger",
   children,
 }) => {
   const { t } = useTranslation();
@@ -22,12 +24,12 @@ const FormModal = ({
         <div className="d-flex justify-content-end mt-4">
           <button
             type="button"
-            className="btn btn-danger me-2"
+            className={`btn btn-${cancelColor} me-2`}
             onClick={onCancel}
           >
             {t('cancel')}
           </button>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className={`btn btn-${confirmColor}`}>
             {confirmText}
           </button>
         </div>
