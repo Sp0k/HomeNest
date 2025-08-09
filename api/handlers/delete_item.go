@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func DeleteItemHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) DeleteItemHandler(w http.ResponseWriter, r *http.Request) {
 	p := r.URL.Query().Get("path")
 	clean := filepath.Clean(p)
 	if strings.Contains(clean, "..") {
@@ -15,7 +15,7 @@ func DeleteItemHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	abs := filepath.Join(BaseDir, clean)
+	abs := filepath.Join(s.BaseDir, clean)
 
 	info, err := os.Stat(abs)
 	if (err != nil) {

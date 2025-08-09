@@ -15,7 +15,7 @@ type CreateFileRequest struct {
 	FileType string `json:"fileType"`
 }
 
-func CreateFileHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) CreateFileHandler(w http.ResponseWriter, r *http.Request) {
 	var req CreateFileRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
@@ -33,7 +33,7 @@ func CreateFileHandler(w http.ResponseWriter, r *http.Request) {
 		fullName = strings.Join([]string{req.FileName, req.FileType}, ".")
 	}
 
-	fullPath := filepath.Join(BaseDir, cleanParent, fullName)
+	fullPath := filepath.Join(s.BaseDir, cleanParent, fullName)
 
 	if _, err := os.Create(fullPath); err != nil {
 		http.Error(w, "Could not create folder: "+err.Error(),

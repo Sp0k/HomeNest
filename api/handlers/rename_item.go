@@ -15,7 +15,7 @@ type RenameItemRequest struct {
 	Type string `json:"type"`
 }
 
-func RenameItemHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) RenameItemHandler(w http.ResponseWriter, r *http.Request) {
 	var req RenameItemRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
@@ -31,8 +31,8 @@ func RenameItemHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newPath := filepath.Join(BaseDir, cleanParent, req.NewName)
-	currPath := filepath.Join(BaseDir, cleanParent, req.CurrName)
+	newPath := filepath.Join(s.BaseDir, cleanParent, req.NewName)
+	currPath := filepath.Join(s.BaseDir, cleanParent, req.CurrName)
 
 	if err := os.Rename(currPath, newPath); err != nil {
 		http.Error(w, "Could not rename item" + err.Error(), http.StatusInternalServerError)

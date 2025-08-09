@@ -24,7 +24,7 @@ func isDirectoryFile(fileName string) bool {
 	return false
 }
 
-func GetFilesHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) GetFilesHandler(w http.ResponseWriter, r *http.Request) {
 	raw := r.URL.Query().Get("path")
 	if raw == "" {
 		raw = "/"
@@ -36,7 +36,7 @@ func GetFilesHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fullPath := filepath.Join(BaseDir, cleanParent)
+	fullPath := filepath.Join(s.BaseDir, cleanParent)
 
 	entries, err := os.ReadDir(fullPath)
 	if err != nil {

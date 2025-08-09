@@ -13,15 +13,15 @@ type MoveRequest struct {
 	DestPath 	 string `json:"destPath"`
 }
 
-func MoveHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) MoveHandler(w http.ResponseWriter, r *http.Request) {
 	var req MoveRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	srcFull := filepath.Join(BaseDir, filepath.Clean(req.SourcePath))
-	destDir := filepath.Join(BaseDir, filepath.Clean(req.DestPath))
+	srcFull := filepath.Join(s.BaseDir, filepath.Clean(req.SourcePath))
+	destDir := filepath.Join(s.BaseDir, filepath.Clean(req.DestPath))
 
 	info, err := os.Stat(destDir)
 	if err != nil {
