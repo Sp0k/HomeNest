@@ -46,5 +46,6 @@ func main() {
 	)
 
 	log.Println("API listening on http://localhost:8080")
+	log.Printf("Using ROOT_DIR: %s", srv.BaseDir)
 	log.Fatal(http.ListenAndServe(":8080", corsOpts(r)))
 }
