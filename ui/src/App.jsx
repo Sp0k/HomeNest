@@ -7,10 +7,10 @@ import './App.css'
 
 import HomePage from './pages/HomePage/HomePage'
 import DashboardPage from './pages/DashboardPage/DashboardPage'
+import OnlyOfficeEditor from "./pages/Editor/OnlyOfficeEditor"
 
 const App = () => {
   const { t, i18n } = useTranslation();
-
   useEffect(() => {
     document.title = t('title.page')
   }, [i18n.language]);
@@ -20,6 +20,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/dashboard/*" element={<DashboardPage />} />
+        <Route path="/editor" element={<OnlyOfficeEditor />} />
       </Routes>
       <ToastContainer />
     </div>

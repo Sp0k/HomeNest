@@ -9,37 +9,14 @@ import (
 	"time"
 )
 
-// BaseDir is where all your files/folders live on disk.
-var BaseDir string
-
-func init() {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		panic("cannot determine user home directory: " + err.Error())
-	}
-	// TODO: add an installation process where the user can define their own path
-	BaseDir = filepath.Join(home, "Documents", "tests")
-}
-
 // CreateFolderRequest is the JSON payload we expect from the client.
 type CreateFolderRequest struct {
 	ParentPath string `json:"parentPath"`
 	FolderName string `json:"folderName"`
 }
 
-// FileNode is what we send back to the client to represent a file or folder.
-type FileNode struct {
-	Name string `json:"name"`
-	Path string `json:"path"` // relative to BaseDir, with forward‑slashes
-	IsDir bool `json:"isDir"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	LastAccessed *time.Time `json:"lastAccessed"`
-	CreatedBy string `json:"createdBy"`
-}
-
 // CreateFolderHandler handles POST /api/createFolder
-func CreateFolderHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) CreateFolderHandler(w http.ResponseWriter, r *http.Request) {
 	var req CreateFolderRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
@@ -52,7 +29,7 @@ func CreateFolderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fullPath := filepath.Join(BaseDir, cleanParent, req.FolderName)
+	fullPath := filepath.Join(s.BaseDir, cleanParent, req.FolderName)
 
 	if err := os.MkdirAll(fullPath, 0755); err != nil {
 		http.Error(w, "Could not create folder: " + err.Error(),

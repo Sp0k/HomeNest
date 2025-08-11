@@ -11,7 +11,7 @@ import (
 
 const uploadLimit = 500 << 20 // 500 MiB
 
-func UploadFileHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) UploadFileHandler(w http.ResponseWriter, r *http.Request) {
   r.Body = http.MaxBytesReader(w, r.Body, uploadLimit)
   if err := r.ParseMultipartForm(uploadLimit); err != nil {
     http.Error(w, "Could not parse multipart form: "+err.Error(), http.StatusBadRequest)
@@ -41,7 +41,7 @@ func UploadFileHandler(w http.ResponseWriter, r *http.Request) {
         return
       }
 
-      dstPath := filepath.Join(BaseDir, cleanParent, rel)
+      dstPath := filepath.Join(s.BaseDir, cleanParent, rel)
       if err := os.MkdirAll(filepath.Dir(dstPath), 0755); err != nil {
         in.Close()
         http.Error(w, "Could not create folder: "+err.Error(), http.StatusInternalServerError)

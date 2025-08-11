@@ -8,7 +8,7 @@ import (
     "strings"
 )
 
-func GetFoldersHandler(w http.ResponseWriter, r *http.Request) {
+func (s *Server) GetFoldersHandler(w http.ResponseWriter, r *http.Request) {
     // 1️⃣ Read the `?path=` query parameter
     raw := r.URL.Query().Get("path")
     if raw == "" {
@@ -23,7 +23,7 @@ func GetFoldersHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     // 3️⃣ Compute on‑disk directory
-    fullPath := filepath.Join(BaseDir, cleanParent)
+    fullPath := filepath.Join(s.BaseDir, cleanParent)
 
     // 4️⃣ Read the directory
     entries, err := os.ReadDir(fullPath)
