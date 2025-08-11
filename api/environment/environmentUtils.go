@@ -9,18 +9,13 @@ import (
 )
 
 const (
-	RootDir string = "ROOT_DIR"
-	OnlyOfficeJWTSecret string = "ONLYOFFICE_JWT_SECRET"
-	ApiPublicUrl string = "API_PUBLIC_URL" 
-	AllowedOrigins string = "ALLOWED_ORIGINS"
+	RootDir             = "ROOT_DIR"
+	OnlyOfficeJWTSecret = "ONLYOFFICE_JWT_SECRET"
+	ApiPublicUrl        = "API_PUBLIC_URL"
+	AllowedOrigins      = "ALLOWED_ORIGINS"
 )
 
-func Getenv(key, def string) string {
-	if v := os.Getenv(key); v != "" { return v }
-	return def
-}
-// ExpandPath expands "~", "$HOME", "${HOME}" (and %USERPROFILE% on Windows),
-// and turns relative paths into absolute ones rooted at the user's home dir.
+// ExpandPath expands "~", $HOME, and turns relative into absolute (under $HOME)
 func ExpandPath(p string) string {
 	p = strings.TrimSpace(p)
 	if p == "" {

@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	_ = godotenv.Load(".env") // OK if missing (Docker/production)
+	_ = godotenv.Load("../.env", ".env") // OK if missing (Docker/production)
 
 	baseDir := env.ResolveRootDir()
 	srv, err := nest.NewServer(baseDir)
@@ -45,7 +45,7 @@ func main() {
 		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
 	)
 
-	log.Println("API listening on http://localhost:8080")
+	log.Println("API listening on http://localhost:8081")
 	log.Printf("Using ROOT_DIR: %s", srv.BaseDir)
-	log.Fatal(http.ListenAndServe(":8080", corsOpts(r)))
+	log.Fatal(http.ListenAndServe(":8081", corsOpts(r)))
 }
