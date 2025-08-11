@@ -30,6 +30,9 @@ func main() {
 	r.HandleFunc("/api/rename", srv.RenameItemHandler).Methods("POST")
 	r.HandleFunc("/api/delete", srv.DeleteItemHandler).Methods("DELETE")
 	r.HandleFunc("/api/move", srv.MoveHandler).Methods("POST")
+	r.HandleFunc("/api/onlyoffice/config", srv.OnlyOfficeConfigHandler).Methods("POST")
+	r.HandleFunc("/api/onlyoffice/callback", srv.OnlyOfficeCallbackHandler).Methods("POST")
+	r.HandleFunc("/api/files",              srv.FilesDownloadHandler).Methods("GET")
 
 	// CORS origins from env (comma-separated), with sensible defaults for dev
 	defaultOrigins := []string{
@@ -43,7 +46,7 @@ func main() {
 		handlers.AllowedOrigins(origins),
 		handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT", "OPTIONS"}),
 		handlers.AllowedHeaders([]string{"Content-Type", "Authorization"}),
-	)
+		)
 
 	log.Println("API listening on http://localhost:8081")
 	log.Printf("Using ROOT_DIR: %s", srv.BaseDir)

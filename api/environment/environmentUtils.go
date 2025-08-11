@@ -13,6 +13,7 @@ const (
 	OnlyOfficeJWTSecret = "ONLYOFFICE_JWT_SECRET"
 	ApiPublicUrl        = "API_PUBLIC_URL"
 	AllowedOrigins      = "ALLOWED_ORIGINS"
+	OnlyOfficeURL				= "ONLYOFFICE_URL"
 )
 
 // ExpandPath expands "~", $HOME, and turns relative into absolute (under $HOME)
