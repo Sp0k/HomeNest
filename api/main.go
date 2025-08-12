@@ -20,19 +20,23 @@ func main() {
 	if err != nil { log.Fatalf("%v", err) }
 
 	r := mux.NewRouter()
+	r.PathPrefix("/assets/docbuilder").HandlerFunc(srv.DocbuilderScript).Methods("GET", "HEAD")
 
-	r.HandleFunc("/api/createFolder", srv.CreateFolderHandler).Methods("POST")
-	r.HandleFunc("/api/getFolders", srv.GetFoldersHandler).Methods("GET")
-	r.HandleFunc("/api/getFiles", srv.GetFilesHandler).Methods("GET")
-	r.HandleFunc("/api/createFile", srv.CreateFileHandler).Methods("POST")
-	r.HandleFunc("/api/upload", srv.UploadFileHandler).Methods("POST")
-	r.HandleFunc("/api/download", srv.DownloadHandler).Methods("GET")
-	r.HandleFunc("/api/rename", srv.RenameItemHandler).Methods("POST")
-	r.HandleFunc("/api/delete", srv.DeleteItemHandler).Methods("DELETE")
-	r.HandleFunc("/api/move", srv.MoveHandler).Methods("POST")
-	r.HandleFunc("/api/onlyoffice/config", srv.OnlyOfficeConfigHandler).Methods("POST")
-	r.HandleFunc("/api/onlyoffice/callback", srv.OnlyOfficeCallbackHandler).Methods("POST")
-	r.HandleFunc("/api/files",              srv.FilesDownloadHandler).Methods("GET")
+	api := r.PathPrefix("/api").Subrouter()
+
+	api.HandleFunc("/createFolder", srv.CreateFolderHandler).Methods("POST")
+	api.HandleFunc("/getFolders", srv.GetFoldersHandler).Methods("GET")
+	api.HandleFunc("/getFiles", srv.GetFilesHandler).Methods("GET")
+	api.HandleFunc("/createFile", srv.CreateFileHandler).Methods("POST")
+	api.HandleFunc("/upload", srv.UploadFileHandler).Methods("POST")
+	api.HandleFunc("/download", srv.DownloadHandler).Methods("GET")
+	api.HandleFunc("/rename", srv.RenameItemHandler).Methods("POST")
+	api.HandleFunc("/delete", srv.DeleteItemHandler).Methods("DELETE")
+	api.HandleFunc("/move", srv.MoveHandler).Methods("POST")
+	api.HandleFunc("/onlyoffice/config", srv.OnlyOfficeConfigHandler).Methods("POST")
+	api.HandleFunc("/onlyoffice/callback", srv.OnlyOfficeCallbackHandler).Methods("POST")
+	api.HandleFunc("/files", srv.FilesDownloadHandler).Methods("GET")
+	api.HandleFunc("/onlyoffice/createFile", srv.OnlyOfficeCreateFile).Methods("POST")
 
 	// CORS origins from env (comma-separated), with sensible defaults for dev
 	defaultOrigins := []string{

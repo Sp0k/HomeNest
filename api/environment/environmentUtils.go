@@ -14,6 +14,7 @@ const (
 	ApiPublicUrl        = "API_PUBLIC_URL"
 	AllowedOrigins      = "ALLOWED_ORIGINS"
 	OnlyOfficeURL				= "ONLYOFFICE_URL"
+	OnlyOfficeFetchURL  = "ONLYOFFICE_FETCH_URL"
 )
 
 // ExpandPath expands "~", $HOME, and turns relative into absolute (under $HOME)

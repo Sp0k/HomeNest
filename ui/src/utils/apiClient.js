@@ -12,8 +12,14 @@ const apiClient = {
   getFiles: (path) =>
     axios.get('/api/getFiles', { params: { path } }),
 
-  createFile: (parentPath, fileName, fileType) =>
-    axios.post('/api/createFile', { parentPath, fileName, fileType }),
+  createFile: (parentPath, fileName, fileType) => {
+    const ooTypes = new Set(['docx', 'xslx', 'pptx']);
+    if (ooTypes.has(String(fileType).toLowerCase())) {
+      return axios.post('/api/onlyoffice/createFile', { parentPath, fileName, fileType });
+    }
+    // Fallback for custom types
+    return axios.post('/api/createFile', { parentPath, fileName, fileType });
+  },
 
   uploadFiles: (formData) =>
     axios.post('/api/upload', formData, {
