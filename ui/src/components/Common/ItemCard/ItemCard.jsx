@@ -8,7 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { isDescendant } from '../../../utils/pathUtils';
 
 import ItemType from "../../Types/itemType";
-import apiClient from '../../../utils/apiClient';
+import { useDispatch } from 'react-redux';
+import { moveItem } from '../../../redux/actionCreators/fileFoldersActionCreator';
 
 const ItemCard = ({
   item,
@@ -20,6 +21,7 @@ const ItemCard = ({
 }) => {
   const ref = useRef(null);
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const [{ isDragging }, drag] = useDrag({
     type: 'ITEM',
     item: { path: item.path, isDirectory: type === ItemType.FOLDER, name: getDisplayName(item.name), iconType: type },
@@ -34,9 +36,17 @@ const ItemCard = ({
       !isDescendant(dragged.path, item.path),
     drop: async dragged => {
       try {
-        await apiClient.moveItem(dragged.path, item.path);
+        const name = dragged.path.split('/').pop();
+        const data = {
+          fromPath: dragged.path,
+          toPath: item.path,
+          name,
+          type: dragged.isDirectory ? ItemType.FOLDER : ItemType.FILE,
+        };
+        
+        dispatch(moveItem(data));
+
         onDropSuccess?.();
-        toast.success(t('success.move'));
       } catch (err) {
         console.error(err);
         toast.error(t('error.move'));

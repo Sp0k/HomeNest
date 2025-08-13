@@ -189,3 +189,23 @@ export const deleteItem = (data) => async (dispatch) => {
     toast.error(i18n.t(`error.delete.${type}`));
   }
 }
+
+export const moveItem = (data) => async (dispatch) => {
+  const { fromPath, toPath, name, type } = data;
+  try {
+    await apiClient.moveItem(fromPath, toPath);
+
+    if (fromPath !== toPath) {
+      if (type === ItemType.FOLDER) {
+        dispatch(removeFolder(name));
+      } else {
+        dispatch(removeFile(name));
+      }
+    }
+
+    toast.success(i18n.t(`success.move.${type}`));
+  } catch (err) {
+    console.error(`Failed to move ${type}:`, err);
+    toast.error(i18n.t(`error.move.${type}`));
+  }
+};

@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { changeFolder } from "../redux/actionCreators/fileFoldersActionCreator";
+import { changeFolder, moveItem } from "../redux/actionCreators/fileFoldersActionCreator";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -12,22 +12,16 @@ function useBreadcrumbDrop(currentFolder, fetchItems) {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  return useCallback(async (sourcePath, destFolder) => {
-    try {
-      await apiClient.moveItem(sourcePath, destFolder);
-      dispatch(changeFolder(destFolder));
-      const param = destFolder === '/'
-        ? ''
-        : encodeURIComponent(destFolder.replace(/^\//, ''));
-      navigate(destFolder === '/'
-        ? '/dashboard'
-        : `/dashboard/folder/${param}`);
-      fetchItems(destFolder);
-      toast.success(t('success.move'));
-    } catch (err) {
-      console.error(err);
-      toast.error(t('error.move'));
+  return useCallback(async (sourcePath, destFolder, type) => {
+    const name = sourcePath.split('/').pop();
+    const data = {
+      fromPath: sourcePath,
+      toPath: destFolder,
+      name,
+      type,
     }
+
+    dispatch(moveItem(data));
   }, [currentFolder, dispatch, navigate, fetchItems, t]);
 }
 

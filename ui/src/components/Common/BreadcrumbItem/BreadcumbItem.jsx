@@ -1,4 +1,5 @@
 import { useDrop } from "react-dnd";
+import ItemType from "../../Types/itemType";
 
 const BreadcrumbItem = ({
   label,
@@ -10,7 +11,7 @@ const BreadcrumbItem = ({
   const [{ isOver, canDrop }, dropRef] = useDrop({
     accept: 'ITEM',
     canDrop: dragged => dragged.parent !== path,
-    drop: async (dragged) => onDrop(dragged.path, path),
+    drop: async (dragged) => onDrop(dragged.path, path, dragged.isDirectory ? ItemType.FOLDER : ItemType.FILE),
     collect: monitor => ({
       isOver: monitor.isOver({ shallow: true }),
       canDrop: monitor.canDrop(),

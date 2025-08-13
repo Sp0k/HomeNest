@@ -13,7 +13,7 @@ const apiClient = {
     axios.get('/api/getFiles', { params: { path } }),
 
   createFile: (parentPath, fileName, fileType) => {
-    const ooTypes = new Set(['docx', 'xslx', 'pptx']);
+    const ooTypes = new Set(['docx', 'xlsx', 'pptx']);
     if (ooTypes.has(String(fileType).toLowerCase())) {
       return axios.post('/api/onlyoffice/createFile', { parentPath, fileName, fileType });
     }
@@ -27,7 +27,7 @@ const apiClient = {
     }),
 
   downloadFile: (path) =>
-    axios.get('/api/download', { params: {path}, responseType: 'blobl' }),
+    axios.get('/api/download', { params: {path}, responseType: 'blob' }),
 
   // Rename, delete
   renameItem: (parentPath, currentName, newName, type) =>
