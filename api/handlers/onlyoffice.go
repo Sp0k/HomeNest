@@ -6,13 +6,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
+	"mime"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
-	"mime"
 
 	"github.com/golang-jwt/jwt/v5"
 
@@ -101,22 +102,22 @@ func (s *Server) OnlyOfficeConfigHandler(w http.ResponseWriter, r *http.Request)
 			"url":      downloadURL,
 		},
 		"documentType": docTypeForExt(filepath.Ext(abs)),
-		"width":  "100%",
-		"height": "100%",
+		"width":        "100%",
+		"height":       "100%",
 		"editorConfig": map[string]any{
 			"mode":        map[bool]string{true: "edit", false: "view"}[strings.ToLower(req.Mode) != "view"],
 			"callbackUrl": callbackURL,
 			"customization": map[string]any{
 				"autosave": true,
+				"forcesave": true,
 			},
 		},
 		"permissions": map[string]any{
 			"edit":     strings.ToLower(req.Mode) != "view",
 			"download": true,
-			"chat": 		true,
+			"chat":     true,
 		},
 	}
-
 
 	// Sign the *config itself* (no "payload" wrapper)
 	tokenStr, err := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims(unsignedCfg)).
@@ -165,7 +166,7 @@ func (s *Server) FilesDownloadHandler(w http.ResponseWriter, r *http.Request) {
 	if ctype == "" {
 		buf := make([]byte, 512)
 		n, _ := f.Read(buf)
-		f.Seek(0, io.SeekStart)
+		_, _ = f.Seek(0, io.SeekStart)
 		ctype = http.DetectContentType(buf[:n])
 	}
 	w.Header().Set("Content-Type", ctype)
@@ -173,11 +174,6 @@ func (s *Server) FilesDownloadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "private, no-cache, no-store")
 	// Let DS read the file bytes
 	http.ServeContent(w, r, filepath.Base(abs), fi.ModTime(), f)
-}
-
-type onlyofficeCallback struct {
-	Status int    `json:"status"`
-	Url    string `json:"url"` // DS gives URL to updated file
 }
 
 // POST /api/onlyoffice/callback?path=...
@@ -198,19 +194,60 @@ func (s *Server) OnlyOfficeCallbackHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	type onlyofficeCallback struct {
+	// Payload may be open JSON or wrapped in {"token": "<jwt>"} when JWT is enabled
+	type cbPayload struct {
 		Status     int    `json:"status"`
 		Url        string `json:"url"`
 		ChangesURL string `json:"changesurl"`
 		FileType   string `json:"filetype"`
 	}
-	var cb onlyofficeCallback
-	if err := json.NewDecoder(r.Body).Decode(&cb); err != nil {
+
+	var cb cbPayload
+	raw, err := io.ReadAll(r.Body)
+	if err != nil {
 		http.Error(w, `{"error":1,"msg":"bad payload"}`, http.StatusBadRequest)
 		return
 	}
+	secret := os.Getenv(env.OnlyOfficeJWTSecret)
+	if secret != "" {
+		var wrap struct{ Token string `json:"token"` }
+		if err := json.Unmarshal(raw, &wrap); err != nil || wrap.Token == "" {
+			http.Error(w, `{"error":1,"msg":"missing token"}`, http.StatusUnauthorized)
+			return
+		}
+		tok, err := jwt.Parse(wrap.Token, func(t *jwt.Token) (any, error) {
+			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method")
+			}
+			return []byte(secret), nil
+		})
+		if err != nil || !tok.Valid {
+			http.Error(w, `{"error":1,"msg":"invalid token"}`, http.StatusUnauthorized)
+			return
+		}
+		claims, _ := tok.Claims.(jwt.MapClaims)
+		// Some DS builds nest the body under a "payload" claim.
+		src := claims
+		if p, ok := claims["payload"]; ok {
+			if m, ok2 := p.(map[string]any); ok2 {
+				src = jwt.MapClaims(m)
+			}
+		}
+		buf, _ := json.Marshal(src)
+		if err := json.Unmarshal(buf, &cb); err != nil {
+			http.Error(w, `{"error":1,"msg":"bad token payload"}`, http.StatusBadRequest)
+			return
+		}
+	} else {
+		if err := json.Unmarshal(raw, &cb); err != nil {
+			http.Error(w, `{"error":1,"msg":"bad payload"}`, http.StatusBadRequest)
+			return
+		}
+	}
 
-	// Only save on statuses 2, 6, 7
+	log.Printf("[onlyoffice] callback: path=%q status=%d url=%q", target, cb.Status, cb.Url)
+
+	// Only save on statuses 2 (MustSave), 6 (MustForceSave), 7 (Corrupted-then-save)
 	if cb.Status != 2 && cb.Status != 6 && cb.Status != 7 {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"error":0}`))
@@ -225,42 +262,46 @@ func (s *Server) OnlyOfficeCallbackHandler(w http.ResponseWriter, r *http.Reques
 		http.Error(w, `{"error":1,"msg":"forbidden"}`, http.StatusForbidden)
 		return
 	}
+	log.Printf("[onlyoffice] save -> abs=%s (BaseDir=%s, rel=%s)", abs, s.BaseDir, rel)
 
-	// ----- Validate cb.Url origin (public base) -----
-	dsBase := strings.TrimRight(os.Getenv(env.OnlyOfficeURL), "/") // e.g. http://localhost:8080
-	if dsBase == "" {
-		http.Error(w, `{"error":1,"msg":"ONLYOFFICE_URL not set"}`, http.StatusInternalServerError)
+	// ----- Validate cb.Url origin (accept external OR internal DS base) -----
+	dsExternal := strings.TrimRight(os.Getenv(env.OnlyOfficeURL), "/")         // e.g. http://localhost:8080
+	dsInternal := strings.TrimRight(os.Getenv("ONLYOFFICE_URL_INTERNAL"), "/") // e.g. http://documentserver
+	if dsExternal == "" && dsInternal == "" {
+		http.Error(w, `{"error":1,"msg":"ONLYOFFICE_URL[_INTERNAL] not set"}`, http.StatusInternalServerError)
 		return
 	}
 	u, err := url.Parse(cb.Url)
-	if err != nil || !strings.HasPrefix(cb.Url, dsBase+"/") {
-		http.Error(w, `{"error":1,"msg":"bad upstream"}`, http.StatusBadRequest)
+	if err != nil {
+		http.Error(w, `{"error":1,"msg":"bad upstream url"}`, http.StatusBadRequest)
+		return
+	}
+	hasAllowedBase := (dsExternal != "" && strings.HasPrefix(cb.Url, dsExternal+"/")) ||
+	(dsInternal != "" && strings.HasPrefix(cb.Url, dsInternal+"/"))
+	if !hasAllowedBase {
+		log.Printf("OnlyOffice: upstream url %q not matching bases ext=%q int=%q", cb.Url, dsExternal, dsInternal)
+		http.Error(w, `{"error":1,"msg":"bad upstream base"}`, http.StatusBadRequest)
 		return
 	}
 
-	// ----- Build internal fetch URL that works from inside the API container -----
-	fetchBase := strings.TrimRight(os.Getenv("ONLYOFFICE_FETCH_URL"), "/") // e.g. http://documentserver
+	// ----- Build internal fetch URL (prefer internal for container-to-container) -----
 	fetchURL := cb.Url
-	if fetchBase != "" {
-		internalBase, err := url.Parse(fetchBase)
-		if err == nil && internalBase.Scheme != "" && internalBase.Host != "" {
-			u.Scheme = internalBase.Scheme
-			u.Host = internalBase.Host
-			fetchURL = u.String()
-		}
+	if dsInternal != "" {
+		u.Scheme, u.Host = mustParse(dsInternal)
+		fetchURL = u.String()
 	}
+	log.Printf("[onlyoffice] fetchURL=%s", fetchURL)
 
 	// ----- Get updated file from DS (with JWT Auth & timeout) -----
-	secret := os.Getenv(env.OnlyOfficeJWTSecret)
 	authTok, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"payload": map[string]any{},
 	}).SignedString([]byte(secret))
 
 	client := &http.Client{Timeout: 15 * time.Second}
-	req, _ := http.NewRequest("GET", fetchURL, nil)
-	req.Header.Set("Authorization", "Bearer "+authTok)
+	req2, _ := http.NewRequest("GET", fetchURL, nil)
+	req2.Header.Set("Authorization", "Bearer "+authTok)
 
-	resp, err := client.Do(req)
+	resp, err := client.Do(req2)
 	if err != nil || resp.StatusCode != http.StatusOK {
 		if resp != nil {
 			resp.Body.Close()
@@ -288,8 +329,7 @@ func (s *Server) OnlyOfficeCallbackHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	if !isZipHeader(head) {
-		// Log context; avoid corrupting the host file
-		// log.Printf("OnlyOffice: invalid content (ct=%q) from %s", resp.Header.Get("Content-Type"), fetchURL)
+		// avoid corrupting the host file
 		http.Error(w, `{"error":1,"msg":"invalid file from DS"}`, http.StatusBadGateway)
 		return
 	}
@@ -326,3 +366,13 @@ func (s *Server) OnlyOfficeCallbackHandler(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte(`{"error":0}`))
 }
+
+// mustParse splits scheme://host from a base URL; panics only if misconfigured
+func mustParse(base string) (scheme, host string) {
+	u, err := url.Parse(base)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		panic("ONLYOFFICE_URL_INTERNAL is invalid: " + base)
+	}
+	return u.Scheme, u.Host
+}
+
